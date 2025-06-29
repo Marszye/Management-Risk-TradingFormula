@@ -8,22 +8,23 @@ import { toast } from '@/components/ui/use-toast';
 import { Eye, EyeOff } from 'lucide-react';
 
 export const AuthScreen = () => {
-  const [isLogin, setIsLogin] = useState(false);
+  const [isLogin, setIsLogin] = useState(true);
   const [showVerification, setShowVerification] = useState(false);
+  const [showRegistrationForm, setShowRegistrationForm] = useState(false);
   const [verificationCode, setVerificationCode] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const motivationalQuote = "Masuk bukan untuk untung cepat. Tapi untuk jadi versi kamu yang paling disiplin.";
+  const motivationalQuote = "Lebih baik ga Entry daripada Rugi, Makanya semua tu Konfirmasi Dulu!";
 
   const handleVerification = () => {
     if (verificationCode.toLowerCase() === 'hearme') {
       // Open lynk.id link
       window.open('https://lynk.id/marszye?fbclid=PAZXh0bgNhZW0CMTEAAacpTw4LqakuUW5KrhF_N55LISkjVcFpZxxW6MxTWWnydLKVXCbZT3sDiH6EFQ_aem_Crm0WJDeQOvx1VnJiZ1q5Q', '_blank');
       setShowVerification(false);
-      setIsLogin(false); // Show registration form
+      setShowRegistrationForm(true);
     } else {
       toast({
         title: "Kode Salah",
@@ -61,7 +62,7 @@ export const AuthScreen = () => {
         if (error.message.includes('User already registered')) {
           toast({
             title: "SESUAIKAN",
-            description: "Nama telah ada, buat nama yang lain",
+            description: "nama telah ada, buat nama yang lain",
             variant: "destructive",
           });
         } else {
@@ -72,6 +73,7 @@ export const AuthScreen = () => {
           title: "Akun Berhasil Dibuat!",
           description: "Silakan login dengan akun baru Anda.",
         });
+        setShowRegistrationForm(false);
         setIsLogin(true);
       }
     } catch (error: any) {
@@ -158,25 +160,91 @@ export const AuthScreen = () => {
           </Card>
         )}
 
-        {/* Registration/Login Form */}
-        {!showVerification && (
+        {/* Registration Form After Verification */}
+        {showRegistrationForm && (
+          <Card className="bg-gray-900 border-gray-800">
+            <CardHeader>
+              <CardTitle className="text-green-400 text-center">Daftar Akun</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Input
+                  type="text"
+                  placeholder="Username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="bg-gray-800 border-gray-700 text-white"
+                />
+              </div>
+              
+              <div className="space-y-2 relative">
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="bg-gray-800 border-gray-700 text-white pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+
+              <Button
+                onClick={handleRegister}
+                disabled={loading}
+                className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold"
+              >
+                {loading ? 'Processing...' : 'Buat Akun'}
+              </Button>
+
+              <div className="text-center">
+                <button
+                  onClick={() => {
+                    setShowRegistrationForm(false);
+                    setIsLogin(true);
+                  }}
+                  className="text-green-400 hover:text-green-300 text-sm"
+                >
+                  Sudah punya akun? Login
+                </button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Main Auth Screen */}
+        {!showVerification && !showRegistrationForm && (
           <Card className="bg-gray-900 border-gray-800">
             <CardHeader>
               <CardTitle className="text-green-400 text-center">
-                {isLogin ? 'Login' : 'Daftar Akun'}
+                {isLogin ? 'Login' : 'Pilih Opsi'}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {!isLogin && (
-                <Button
-                  onClick={() => setShowVerification(true)}
-                  className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold"
-                >
-                  Register
-                </Button>
+                <div className="space-y-3">
+                  <Button
+                    onClick={() => setShowVerification(true)}
+                    className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold"
+                  >
+                    Register
+                  </Button>
+                  <Button
+                    onClick={() => setIsLogin(true)}
+                    variant="outline"
+                    className="w-full border-gray-700 text-gray-300 hover:bg-gray-800"
+                  >
+                    Login
+                  </Button>
+                </div>
               )}
 
-              {(isLogin || showVerification === false) && (
+              {isLogin && (
                 <>
                   <div className="space-y-2">
                     <Input
@@ -206,19 +274,19 @@ export const AuthScreen = () => {
                   </div>
 
                   <Button
-                    onClick={isLogin ? handleLogin : handleRegister}
+                    onClick={handleLogin}
                     disabled={loading}
                     className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold"
                   >
-                    {loading ? 'Processing...' : (isLogin ? 'Login' : 'Buat Akun')}
+                    {loading ? 'Processing...' : 'Login'}
                   </Button>
 
                   <div className="text-center">
                     <button
-                      onClick={() => setIsLogin(!isLogin)}
+                      onClick={() => setIsLogin(false)}
                       className="text-green-400 hover:text-green-300 text-sm"
                     >
-                      {isLogin ? 'Belum punya akun? Daftar' : 'Sudah punya akun? Login'}
+                      Belum punya akun? Daftar
                     </button>
                   </div>
                 </>
