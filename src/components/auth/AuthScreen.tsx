@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -8,45 +9,34 @@ import { Eye, EyeOff } from 'lucide-react';
 
 export const AuthScreen = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const [showVerification, setShowVerification] = useState(false);
+  const [showAccessCodePanel, setShowAccessCodePanel] = useState(false);
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
-  const [verificationCode, setVerificationCode] = useState('');
+  const [accessCode, setAccessCode] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [codeVerified, setCodeVerified] = useState(false);
 
   const motivationalQuote = "Lebih baik ga Entry daripada Rugi, Makanya semua tu Konfirmasi Dulu!";
 
-  const handleCodeVerification = () => {
-    if (verificationCode.toLowerCase() === 'hearme') {
-      setCodeVerified(true);
-      toast({
-        title: "Kode Benar!",
-        description: "Silakan klik Get Access untuk melanjutkan.",
-      });
-    } else {
-      toast({
-        title: "Kode Salah",
-        description: "Masukkan kode yang benar untuk melanjutkan.",
-        variant: "destructive",
-      });
-    }
+  const handleGetAccess = () => {
+    // Open lynk.id link
+    window.open('https://lynk.id/marszye?fbclid=PAZXh0bgNhZW0CMTEAAacpTw4LqakuUW5KrhF_N55LISkjVcFpZxxW6MxTWWnydLKVXCbZT3sDiH6EFQ_aem_Crm0WJDeQOvx1VnJiZ1q5Q', '_blank');
   };
 
-  const handleGetAccess = () => {
-    if (codeVerified) {
-      // Open lynk.id link
-      window.open('https://lynk.id/marszye?fbclid=PAZXh0bgNhZW0CMTEAAacpTw4LqakuUW5KrhF_N55LISkjVcFpZxxW6MxTWWnydLKVXCbZT3sDiH6EFQ_aem_Crm0WJDeQOvx1VnJiZ1q5Q', '_blank');
-      setShowVerification(false);
+  const handleVerifyCode = () => {
+    if (accessCode.toLowerCase() === 'hearme') {
+      setShowAccessCodePanel(false);
       setShowRegistrationForm(true);
-      setCodeVerified(false);
-      setVerificationCode('');
+      setAccessCode('');
+      toast({
+        title: "Kode Benar!",
+        description: "Silakan lengkapi form registrasi.",
+      });
     } else {
       toast({
-        title: "Verifikasi Kode Dulu",
-        description: "Masukkan dan verifikasi kode terlebih dahulu.",
+        title: "Kode salah",
+        description: "Minta akses dulu ya!",
         variant: "destructive",
       });
     }
@@ -64,8 +54,8 @@ export const AuthScreen = () => {
 
     setLoading(true);
     try {
-      // Create account with email as username@tirax.app
-      const email = `${username}@tirax.app`;
+      // Create account with email as username@trax.app
+      const email = `${username}@trax.app`;
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -88,11 +78,13 @@ export const AuthScreen = () => {
         }
       } else {
         toast({
-          title: "Akun Berhasil Dibuat!",
+          title: "Registrasi Berhasil!",
           description: "Silakan login dengan akun baru Anda.",
         });
         setShowRegistrationForm(false);
         setIsLogin(true);
+        setUsername('');
+        setPassword('');
       }
     } catch (error: any) {
       console.error('Registration error:', error);
@@ -118,7 +110,7 @@ export const AuthScreen = () => {
 
     setLoading(true);
     try {
-      const email = `${username}@tirax.app`;
+      const email = `${username}@trax.app`;
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -148,51 +140,50 @@ export const AuthScreen = () => {
       <div className="w-full max-w-md space-y-8">
         {/* Logo and Quote */}
         <div className="text-center space-y-4">
-          <h1 className="text-4xl font-bold text-green-400">TIRAX</h1>
+          <h1 className="text-4xl font-bold text-green-400">TRAX</h1>
           <p className="text-gray-300 text-sm italic px-4 leading-relaxed">
             {motivationalQuote}
           </p>
         </div>
 
-        {/* Verification Modal */}
-        {showVerification && (
+        {/* STEP 1: Access Code Panel */}
+        {showAccessCodePanel && (
           <Card className="bg-gray-900 border-gray-800">
             <CardHeader>
-              <CardTitle className="text-green-400 text-center">Kode Verifikasi</CardTitle>
+              <CardTitle className="text-green-400 text-center">Access Code Panel</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <Input
                 type="text"
-                placeholder="Masukkan kode verifikasi"
-                value={verificationCode}
-                onChange={(e) => setVerificationCode(e.target.value)}
+                placeholder="🔑 Masukkan Access Code"
+                value={accessCode}
+                onChange={(e) => setAccessCode(e.target.value)}
                 className="bg-gray-800 border-gray-700 text-white"
               />
               <div className="space-y-3">
                 <Button 
-                  onClick={handleCodeVerification}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold"
-                  disabled={!verificationCode}
-                >
-                  Enter Code Verify
-                </Button>
-                <Button 
                   onClick={handleGetAccess}
                   className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold"
-                  disabled={!codeVerified}
                 >
-                  Get Access
+                  🎁 Get Access
+                </Button>
+                <Button 
+                  onClick={handleVerifyCode}
+                  className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold"
+                  disabled={!accessCode}
+                >
+                  ✅ Verify
                 </Button>
               </div>
             </CardContent>
           </Card>
         )}
 
-        {/* Registration Form After Verification */}
+        {/* STEP 2: Form Registrasi */}
         {showRegistrationForm && (
           <Card className="bg-gray-900 border-gray-800">
             <CardHeader>
-              <CardTitle className="text-green-400 text-center">Daftar Akun</CardTitle>
+              <CardTitle className="text-green-400 text-center">Form Registrasi</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -225,9 +216,9 @@ export const AuthScreen = () => {
               <Button
                 onClick={handleRegister}
                 disabled={loading}
-                className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold"
+                className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold"
               >
-                {loading ? 'Processing...' : 'Buat Akun'}
+                {loading ? 'Processing...' : 'Register Sekarang'}
               </Button>
 
               <div className="text-center">
@@ -245,19 +236,19 @@ export const AuthScreen = () => {
           </Card>
         )}
 
-        {/* Main Auth Screen */}
-        {!showVerification && !showRegistrationForm && (
+        {/* Main Auth Screen (Login/Register Options) */}
+        {!showAccessCodePanel && !showRegistrationForm && (
           <Card className="bg-gray-900 border-gray-800">
             <CardHeader>
               <CardTitle className="text-green-400 text-center">
-                {isLogin ? 'Login' : 'Pilih Opsi'}
+                {isLogin ? 'STEP 3: Login Page' : 'Pilih Opsi'}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {!isLogin && (
                 <div className="space-y-3">
                   <Button
-                    onClick={() => setShowVerification(true)}
+                    onClick={() => setShowAccessCodePanel(true)}
                     className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold"
                   >
                     Register
@@ -306,7 +297,7 @@ export const AuthScreen = () => {
                     disabled={loading}
                     className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold"
                   >
-                    {loading ? 'Processing...' : 'Login'}
+                    {loading ? 'Processing...' : 'Masuk'}
                   </Button>
 
                   <div className="text-center">
@@ -314,7 +305,7 @@ export const AuthScreen = () => {
                       onClick={() => setIsLogin(false)}
                       className="text-green-400 hover:text-green-300 text-sm"
                     >
-                      Belum punya akun? Daftar
+                      Belum punya akun? Register
                     </button>
                   </div>
                 </>
