@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -16,19 +15,38 @@ export const AuthScreen = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [codeVerified, setCodeVerified] = useState(false);
 
   const motivationalQuote = "Lebih baik ga Entry daripada Rugi, Makanya semua tu Konfirmasi Dulu!";
 
-  const handleVerification = () => {
+  const handleCodeVerification = () => {
     if (verificationCode.toLowerCase() === 'hearme') {
-      // Open lynk.id link
-      window.open('https://lynk.id/marszye?fbclid=PAZXh0bgNhZW0CMTEAAacpTw4LqakuUW5KrhF_N55LISkjVcFpZxxW6MxTWWnydLKVXCbZT3sDiH6EFQ_aem_Crm0WJDeQOvx1VnJiZ1q5Q', '_blank');
-      setShowVerification(false);
-      setShowRegistrationForm(true);
+      setCodeVerified(true);
+      toast({
+        title: "Kode Benar!",
+        description: "Silakan klik Get Access untuk melanjutkan.",
+      });
     } else {
       toast({
         title: "Kode Salah",
         description: "Masukkan kode yang benar untuk melanjutkan.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleGetAccess = () => {
+    if (codeVerified) {
+      // Open lynk.id link
+      window.open('https://lynk.id/marszye?fbclid=PAZXh0bgNhZW0CMTEAAacpTw4LqakuUW5KrhF_N55LISkjVcFpZxxW6MxTWWnydLKVXCbZT3sDiH6EFQ_aem_Crm0WJDeQOvx1VnJiZ1q5Q', '_blank');
+      setShowVerification(false);
+      setShowRegistrationForm(true);
+      setCodeVerified(false);
+      setVerificationCode('');
+    } else {
+      toast({
+        title: "Verifikasi Kode Dulu",
+        description: "Masukkan dan verifikasi kode terlebih dahulu.",
         variant: "destructive",
       });
     }
@@ -150,12 +168,22 @@ export const AuthScreen = () => {
                 onChange={(e) => setVerificationCode(e.target.value)}
                 className="bg-gray-800 border-gray-700 text-white"
               />
-              <Button 
-                onClick={handleVerification}
-                className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold"
-              >
-                Get Access
-              </Button>
+              <div className="space-y-3">
+                <Button 
+                  onClick={handleCodeVerification}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+                  disabled={!verificationCode}
+                >
+                  Enter Code Verify
+                </Button>
+                <Button 
+                  onClick={handleGetAccess}
+                  className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold"
+                  disabled={!codeVerified}
+                >
+                  Get Access
+                </Button>
+              </div>
             </CardContent>
           </Card>
         )}
