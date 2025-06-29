@@ -9,7 +9,190 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      journal_entries: {
+        Row: {
+          created_at: string | null
+          id: string
+          problems: string
+          thoughts: string
+          title: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          problems: string
+          thoughts: string
+          title: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          problems?: string
+          thoughts?: string
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          balance: number | null
+          created_at: string | null
+          id: string
+          updated_at: string | null
+          username: string
+        }
+        Insert: {
+          balance?: number | null
+          created_at?: string | null
+          id: string
+          updated_at?: string | null
+          username: string
+        }
+        Update: {
+          balance?: number | null
+          created_at?: string | null
+          id?: string
+          updated_at?: string | null
+          username?: string
+        }
+        Relationships: []
+      }
+      reiteration_loops: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          daily_progress: Json | null
+          duration_days: number
+          id: string
+          journal_id: string
+          progress_days: number | null
+          solution: string
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          daily_progress?: Json | null
+          duration_days: number
+          id?: string
+          journal_id: string
+          progress_days?: number | null
+          solution: string
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          daily_progress?: Json | null
+          duration_days?: number
+          id?: string
+          journal_id?: string
+          progress_days?: number | null
+          solution?: string
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reiteration_loops_journal_id_fkey"
+            columns: ["journal_id"]
+            isOneToOne: false
+            referencedRelation: "journal_entries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      strategies: {
+        Row: {
+          category: string
+          checklist: Json
+          created_at: string | null
+          id: string
+          name: string
+          user_id: string
+        }
+        Insert: {
+          category: string
+          checklist?: Json
+          created_at?: string | null
+          id?: string
+          name: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          checklist?: Json
+          created_at?: string | null
+          id?: string
+          name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      trades: {
+        Row: {
+          closed_at: string | null
+          created_at: string | null
+          discipline_score: number
+          id: string
+          lot_size: number
+          pair: string
+          profit_loss: number | null
+          psychology_state: string
+          result: string | null
+          stop_loss: number | null
+          strategy_id: string | null
+          take_profit: number | null
+          user_id: string
+        }
+        Insert: {
+          closed_at?: string | null
+          created_at?: string | null
+          discipline_score?: number
+          id?: string
+          lot_size: number
+          pair: string
+          profit_loss?: number | null
+          psychology_state: string
+          result?: string | null
+          stop_loss?: number | null
+          strategy_id?: string | null
+          take_profit?: number | null
+          user_id: string
+        }
+        Update: {
+          closed_at?: string | null
+          created_at?: string | null
+          discipline_score?: number
+          id?: string
+          lot_size?: number
+          pair?: string
+          profit_loss?: number | null
+          psychology_state?: string
+          result?: string | null
+          stop_loss?: number | null
+          strategy_id?: string | null
+          take_profit?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trades_strategy_id_fkey"
+            columns: ["strategy_id"]
+            isOneToOne: false
+            referencedRelation: "strategies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
