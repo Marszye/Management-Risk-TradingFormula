@@ -79,6 +79,73 @@
   }
 }
 
+/* Warna Pastel Kustom */
+@layer utilities {
+  /* Pastel Pink */
+  .bg-pastel-pink { @apply bg-pink-100; }
+  .text-pastel-pink { @apply text-pink-400; }
+  .border-pastel-pink { @apply border-pink-200; }
+  
+  /* Pastel Purple */
+  .bg-pastel-purple { @apply bg-purple-100; }
+  .text-pastel-purple { @apply text-purple-400; }
+  .border-pastel-purple { @apply border-purple-200; }
+  
+  /* Pastel Blue */
+  .bg-pastel-blue { @apply bg-blue-100; }
+  .text-pastel-blue { @apply text-blue-400; }
+  .border-pastel-blue { @apply border-blue-200; }
+  
+  /* Pastel Green */
+  .bg-pastel-green { @apply bg-green-100; }
+  .text-pastel-green { @apply text-green-400; }
+  .border-pastel-green { @apply border-green-200; }
+  
+  /* Pastel Yellow */
+  .bg-pastel-yellow { @apply bg-yellow-100; }
+  .text-pastel-yellow { @apply text-yellow-400; }
+  .border-pastel-yellow { @apply border-yellow-200; }
+  
+  /* Pastel Orange */
+  .bg-pastel-orange { @apply bg-orange-100; }
+  .text-pastel-orange { @apply text-orange-400; }
+  .border-pastel-orange { @apply border-orange-200; }
+  
+  /* Pastel Teal */
+  .bg-pastel-teal { @apply bg-teal-100; }
+  .text-pastel-teal { @apply text-teal-400; }
+  .border-pastel-teal { @apply border-teal-200; }
+  
+  /* Pastel Rose */
+  .bg-pastel-rose { @apply bg-rose-100; }
+  .text-pastel-rose { @apply text-rose-400; }
+  .border-pastel-rose { @apply border-rose-200; }
+  
+  /* Pastel Lavender */
+  .bg-lavender-100 { background-color: #f3f0ff; }
+  .bg-lavender-200 { background-color: #e9e4ff; }
+  .text-lavender-600 { color: #8b5cf6; }
+  .border-lavender-200 { border-color: #e9e4ff; }
+  
+  /* Pastel Mint */
+  .bg-mint-100 { background-color: #f0fdfa; }
+  .bg-mint-200 { background-color: #ccfbf1; }
+  .text-mint-600 { color: #0d9488; }
+  .border-mint-200 { border-color: #ccfbf1; }
+  
+  /* Pastel Peach */
+  .bg-peach-100 { background-color: #fef7ed; }
+  .bg-peach-200 { background-color: #fed7aa; }
+  .text-peach-600 { color: #ea580c; }
+  .border-peach-200 { border-color: #fed7aa; }
+  
+  /* Pastel Sky */
+  .bg-sky-100 { background-color: #f0f9ff; }
+  .bg-sky-200 { background-color: #bae6fd; }
+  .text-sky-600 { color: #0284c7; }
+  .border-sky-200 { border-color: #bae6fd; }
+}
+
 /* Custom animations */
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
