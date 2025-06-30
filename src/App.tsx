@@ -3,13 +3,14 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from '@/components/ui/sonner';
 import { AuthGuard } from '@/components/auth/AuthGuard';
+import { AuthScreen } from '@/components/auth/AuthScreen';
 import { AppLayout } from '@/components/layout/AppLayout';
-import { Index } from '@/pages/Index';
+import Index from '@/pages/Index';
 import { Settings } from '@/pages/Settings';
 import { Trade } from '@/pages/Trade';
 import { Journal } from '@/pages/Journal';
 import { Reiteration } from '@/pages/Reiteration';
-import { NotFound } from '@/pages/NotFound';
+import NotFound from '@/pages/NotFound';
 
 const queryClient = new QueryClient();
 
@@ -17,7 +18,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
-        <AuthGuard>
+        <AuthGuard fallback={<AuthScreen />}>
           <AppLayout>
             <Routes>
               <Route path="/" element={<Index />} />
