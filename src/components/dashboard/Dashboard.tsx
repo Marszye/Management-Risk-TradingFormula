@@ -56,7 +56,7 @@ export const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-pink-50 to-purple-50 p-4 md:p-6">
+    <div className="min-h-screen bg-rose-50 p-6">
       <div className="max-w-7xl mx-auto space-y-8">
         
         {/* Welcome Section */}
@@ -68,13 +68,13 @@ export const Dashboard = () => {
             <Sparkles className="absolute -top-2 -right-6 h-6 w-6 text-amber-400 animate-pulse" />
           </div>
           
-          <div className="bg-white/70 backdrop-blur-sm border border-rose-200 rounded-2xl p-6 shadow-lg">
+          <div className="bg-white border border-rose-200 rounded-2xl p-6 shadow-lg">
             <p className="text-xl md:text-2xl font-semibold text-emerald-600 mb-4">
               Kamu sudah {stats?.avgDiscipline || 0}% lebih disiplin hari ini! 🎯
             </p>
             
             {/* Daily Quote */}
-            <div className="bg-gradient-to-r from-lavender-100 to-sky-100 border border-lavender-200 rounded-xl p-4">
+            <div className="bg-lavender-100 border border-lavender-200 rounded-xl p-4">
               <div className="flex items-center justify-center mb-2">
                 <Star className="h-4 w-4 text-amber-500 mr-2" />
                 <span className="text-amber-600 font-semibold text-sm">Quote of the Day</span>
@@ -89,7 +89,7 @@ export const Dashboard = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-          <Card className="bg-white/80 backdrop-blur-sm border-2 border-emerald-200 hover:border-emerald-300 transition-all duration-300 hover:shadow-lg">
+          <Card className="bg-white border-2 border-emerald-200 hover:border-emerald-300 transition-all duration-300 hover:shadow-lg">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
               <CardTitle className="text-sm font-medium text-emerald-700">💰 Saldo Sekarang</CardTitle>
               <DollarSign className="h-5 w-5 text-emerald-500" />
@@ -102,7 +102,7 @@ export const Dashboard = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-white/80 backdrop-blur-sm border-2 border-amber-200 hover:border-amber-300 transition-all duration-300 hover:shadow-lg">
+          <Card className="bg-white border-2 border-amber-200 hover:border-amber-300 transition-all duration-300 hover:shadow-lg">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
               <CardTitle className="text-sm font-medium text-amber-700">📊 Total P&L</CardTitle>
               <TrendingUp className="h-5 w-5 text-amber-500" />
@@ -115,7 +115,7 @@ export const Dashboard = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-white/80 backdrop-blur-sm border-2 border-purple-200 hover:border-purple-300 transition-all duration-300 hover:shadow-lg">
+          <Card className="bg-white border-2 border-purple-200 hover:border-purple-300 transition-all duration-300 hover:shadow-lg">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
               <CardTitle className="text-sm font-medium text-purple-700">🎯 Performa Disiplin</CardTitle>
               <Target className="h-5 w-5 text-purple-500" />
@@ -128,7 +128,7 @@ export const Dashboard = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-white/80 backdrop-blur-sm border-2 border-sky-200 hover:border-sky-300 transition-all duration-300 hover:shadow-lg">
+          <Card className="bg-white border-2 border-sky-200 hover:border-sky-300 transition-all duration-300 hover:shadow-lg">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
               <CardTitle className="text-sm font-medium text-sky-700">📈 Trade / Winrate</CardTitle>
               <TrendingUp className="h-5 w-5 text-sky-500" />
@@ -146,7 +146,7 @@ export const Dashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
           <Button
             onClick={() => navigate('/trade')}
-            className="h-20 bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-500 hover:to-teal-500 text-white text-lg font-bold shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105"
+            className="h-20 bg-emerald-200 hover:bg-emerald-300 text-emerald-800 text-lg font-bold shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105"
           >
             <Play className="mr-3 h-6 w-6" />
             🚀 Start Trade
@@ -154,7 +154,7 @@ export const Dashboard = () => {
           
           <Button
             onClick={() => navigate('/journal')}
-            className="h-20 bg-gradient-to-r from-sky-400 to-blue-400 hover:from-sky-500 hover:to-blue-500 text-white text-lg font-bold shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105"
+            className="h-20 bg-sky-200 hover:bg-sky-300 text-sky-800 text-lg font-bold shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105"
           >
             <BookOpen className="mr-3 h-6 w-6" />
             📝 Journal
@@ -162,7 +162,7 @@ export const Dashboard = () => {
           
           <Button
             onClick={() => navigate('/reiteration')}
-            className="h-20 bg-gradient-to-r from-purple-400 to-pink-400 hover:from-purple-500 hover:to-pink-500 text-white text-lg font-bold shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105"
+            className="h-20 bg-purple-200 hover:bg-purple-300 text-purple-800 text-lg font-bold shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105"
           >
             <RotateCcw className="mr-3 h-6 w-6" />
             🔄 Evaluation

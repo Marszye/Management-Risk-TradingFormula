@@ -7,7 +7,7 @@ interface AppLayoutProps {
 
 export const AppLayout = ({ children }: AppLayoutProps) => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/20 to-indigo-900 text-white">
+    <div className="min-h-screen bg-rose-50 text-slate-800">
       <Navigation />
       <div className="md:ml-72">
         <main className="min-h-screen">
