@@ -5,10 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from '@/components/ui/use-toast';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Sparkles } from 'lucide-react';
 
 export const AuthScreen = () => {
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(false);
   const [showAccessCodePanel, setShowAccessCodePanel] = useState(false);
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
   const [accessCode, setAccessCode] = useState('');
@@ -17,10 +17,17 @@ export const AuthScreen = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const motivationalQuote = "Lebih baik ga Entry daripada Rugi, Makanya semua tu Konfirmasi Dulu!";
+  const motivationalQuotes = [
+    "Lebih baik ga Entry daripada Rugi, Makanya semua tu Konfirmasi Dulu!!!",
+    "Disiplin adalah kunci kesuksesan trading. Jangan pernah melanggar aturan mu sendiri!",
+    "Emosi adalah musuh terbesar trader. Kendalikan, jangan dikendalikan!",
+    "Kamu sedang membentuk otak miliarder. Ini bukan soal cuan, tapi soal kendali.",
+    "Trading bukan tentang berapa banyak profit, tapi berapa sedikit loss yang bisa kamu terima.",
+  ];
+
+  const currentQuote = motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
 
   const handleGetAccess = () => {
-    // Open lynk.id link
     window.open('https://lynk.id/marszye?fbclid=PAZXh0bgNhZW0CMTEAAacpTw4LqakuUW5KrhF_N55LISkjVcFpZxxW6MxTWWnydLKVXCbZT3sDiH6EFQ_aem_Crm0WJDeQOvx1VnJiZ1q5Q', '_blank');
   };
 
@@ -30,12 +37,12 @@ export const AuthScreen = () => {
       setShowRegistrationForm(true);
       setAccessCode('');
       toast({
-        title: "Kode Benar!",
+        title: "✅ Kode Benar!",
         description: "Silakan lengkapi form registrasi.",
       });
     } else {
       toast({
-        title: "Kode salah",
+        title: "❌ Kode salah",
         description: "Minta akses dulu ya!",
         variant: "destructive",
       });
@@ -45,7 +52,7 @@ export const AuthScreen = () => {
   const handleRegister = async () => {
     if (!username || !password) {
       toast({
-        title: "Data Tidak Lengkap",
+        title: "⚠️ Data Tidak Lengkap",
         description: "Mohon isi username dan password.",
         variant: "destructive",
       });
@@ -54,7 +61,6 @@ export const AuthScreen = () => {
 
     setLoading(true);
     try {
-      // Create account with email as username@trax.app
       const email = `${username}@trax.app`;
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -69,7 +75,7 @@ export const AuthScreen = () => {
       if (error) {
         if (error.message.includes('User already registered')) {
           toast({
-            title: "SESUAIKAN",
+            title: "🔄 SESUAIKAN",
             description: "nama telah ada, buat nama yang lain",
             variant: "destructive",
           });
@@ -78,7 +84,7 @@ export const AuthScreen = () => {
         }
       } else {
         toast({
-          title: "Registrasi Berhasil!",
+          title: "🎉 Registrasi Berhasil!",
           description: "Silakan login dengan akun baru Anda.",
         });
         setShowRegistrationForm(false);
@@ -89,7 +95,7 @@ export const AuthScreen = () => {
     } catch (error: any) {
       console.error('Registration error:', error);
       toast({
-        title: "Error",
+        title: "❌ Error",
         description: error.message || "Terjadi kesalahan saat mendaftar.",
         variant: "destructive",
       });
@@ -101,7 +107,7 @@ export const AuthScreen = () => {
   const handleLogin = async () => {
     if (!username || !password) {
       toast({
-        title: "Data Tidak Lengkap",
+        title: "⚠️ Data Tidak Lengkap",
         description: "Mohon isi username dan password.",
         variant: "destructive",
       });
@@ -118,7 +124,7 @@ export const AuthScreen = () => {
 
       if (error) {
         toast({
-          title: "Login Gagal",
+          title: "❌ Login Gagal",
           description: "Username atau password salah.",
           variant: "destructive",
         });
@@ -126,7 +132,7 @@ export const AuthScreen = () => {
     } catch (error: any) {
       console.error('Login error:', error);
       toast({
-        title: "Error",
+        title: "❌ Error",
         description: error.message || "Terjadi kesalahan saat login.",
         variant: "destructive",
       });
@@ -136,21 +142,30 @@ export const AuthScreen = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-8">
         {/* Logo and Quote */}
-        <div className="text-center space-y-4">
-          <h1 className="text-4xl font-bold text-green-400">TRAX</h1>
-          <p className="text-gray-300 text-sm italic px-4 leading-relaxed">
-            {motivationalQuote}
-          </p>
+        <div className="text-center space-y-6">
+          <div className="relative">
+            <h1 className="text-6xl font-bold bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-500 bg-clip-text text-transparent">
+              TRAX
+            </h1>
+            <Sparkles className="absolute -top-2 -right-2 h-8 w-8 text-yellow-400 animate-pulse" />
+          </div>
+          <div className="bg-gradient-to-r from-pink-500/20 to-purple-500/20 border border-pink-500/30 rounded-xl p-4 backdrop-blur-sm">
+            <p className="text-white text-sm italic leading-relaxed font-medium">
+              💎 {currentQuote}
+            </p>
+          </div>
         </div>
 
         {/* STEP 1: Access Code Panel */}
         {showAccessCodePanel && (
-          <Card className="bg-gray-900 border-gray-800">
+          <Card className="bg-gradient-to-br from-indigo-900/90 to-purple-900/90 border-purple-500/30 backdrop-blur-sm">
             <CardHeader>
-              <CardTitle className="text-green-400 text-center">Access Code Panel</CardTitle>
+              <CardTitle className="text-center bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+                ✅ STEP 1: Access Code Panel
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <Input
@@ -158,18 +173,18 @@ export const AuthScreen = () => {
                 placeholder="🔑 Masukkan Access Code"
                 value={accessCode}
                 onChange={(e) => setAccessCode(e.target.value)}
-                className="bg-gray-800 border-gray-700 text-white"
+                className="bg-white/10 border-purple-500/30 text-white placeholder:text-gray-300 focus:border-pink-500"
               />
               <div className="space-y-3">
                 <Button 
                   onClick={handleGetAccess}
-                  className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold"
+                  className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-black font-bold text-lg shadow-lg"
                 >
                   🎁 Get Access
                 </Button>
                 <Button 
                   onClick={handleVerifyCode}
-                  className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold"
+                  className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold text-lg shadow-lg"
                   disabled={!accessCode}
                 >
                   ✅ Verify
@@ -181,28 +196,30 @@ export const AuthScreen = () => {
 
         {/* STEP 2: Form Registrasi */}
         {showRegistrationForm && (
-          <Card className="bg-gray-900 border-gray-800">
+          <Card className="bg-gradient-to-br from-indigo-900/90 to-purple-900/90 border-purple-500/30 backdrop-blur-sm">
             <CardHeader>
-              <CardTitle className="text-green-400 text-center">Form Registrasi</CardTitle>
+              <CardTitle className="text-center bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
+                🧾 STEP 2: Form Registrasi
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Input
                   type="text"
-                  placeholder="Username"
+                  placeholder="👤 Username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="bg-gray-800 border-gray-700 text-white"
+                  className="bg-white/10 border-purple-500/30 text-white placeholder:text-gray-300 focus:border-pink-500"
                 />
               </div>
               
               <div className="space-y-2 relative">
                 <Input
                   type={showPassword ? "text" : "password"}
-                  placeholder="Password"
+                  placeholder="🔒 Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="bg-gray-800 border-gray-700 text-white pr-10"
+                  className="bg-white/10 border-purple-500/30 text-white placeholder:text-gray-300 focus:border-pink-500 pr-10"
                 />
                 <button
                   type="button"
@@ -216,9 +233,9 @@ export const AuthScreen = () => {
               <Button
                 onClick={handleRegister}
                 disabled={loading}
-                className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold"
+                className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-bold text-lg shadow-lg"
               >
-                {loading ? 'Processing...' : 'Register Sekarang'}
+                {loading ? '⏳ Processing...' : '🚀 Register Sekarang'}
               </Button>
 
               <div className="text-center">
@@ -227,9 +244,9 @@ export const AuthScreen = () => {
                     setShowRegistrationForm(false);
                     setIsLogin(true);
                   }}
-                  className="text-green-400 hover:text-green-300 text-sm"
+                  className="text-pink-400 hover:text-pink-300 text-sm font-medium"
                 >
-                  Sudah punya akun? Login
+                  Sudah punya akun? Login 👉
                 </button>
               </div>
             </CardContent>
@@ -238,10 +255,10 @@ export const AuthScreen = () => {
 
         {/* Main Auth Screen (Login/Register Options) */}
         {!showAccessCodePanel && !showRegistrationForm && (
-          <Card className="bg-gray-900 border-gray-800">
+          <Card className="bg-gradient-to-br from-indigo-900/90 to-purple-900/90 border-purple-500/30 backdrop-blur-sm">
             <CardHeader>
-              <CardTitle className="text-green-400 text-center">
-                {isLogin ? 'STEP 3: Login Page' : 'Pilih Opsi'}
+              <CardTitle className="text-center bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+                {isLogin ? '🔐 STEP 3: Login Page' : '🎯 Pilih Opsi'}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -249,16 +266,15 @@ export const AuthScreen = () => {
                 <div className="space-y-3">
                   <Button
                     onClick={() => setShowAccessCodePanel(true)}
-                    className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold"
+                    className="w-full bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 text-white font-bold text-lg shadow-lg"
                   >
-                    Register
+                    📝 Register
                   </Button>
                   <Button
                     onClick={() => setIsLogin(true)}
-                    variant="outline"
-                    className="w-full border-gray-700 text-gray-300 hover:bg-gray-800"
+                    className="w-full bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-bold text-lg shadow-lg"
                   >
-                    Login
+                    🔑 Login
                   </Button>
                 </div>
               )}
@@ -268,20 +284,20 @@ export const AuthScreen = () => {
                   <div className="space-y-2">
                     <Input
                       type="text"
-                      placeholder="Username"
+                      placeholder="👤 Username"
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
-                      className="bg-gray-800 border-gray-700 text-white"
+                      className="bg-white/10 border-purple-500/30 text-white placeholder:text-gray-300 focus:border-cyan-500"
                     />
                   </div>
                   
                   <div className="space-y-2 relative">
                     <Input
                       type={showPassword ? "text" : "password"}
-                      placeholder="Password"
+                      placeholder="🔒 Password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="bg-gray-800 border-gray-700 text-white pr-10"
+                      className="bg-white/10 border-purple-500/30 text-white placeholder:text-gray-300 focus:border-cyan-500 pr-10"
                     />
                     <button
                       type="button"
@@ -295,17 +311,17 @@ export const AuthScreen = () => {
                   <Button
                     onClick={handleLogin}
                     disabled={loading}
-                    className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold"
+                    className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-bold text-lg shadow-lg"
                   >
-                    {loading ? 'Processing...' : 'Masuk'}
+                    {loading ? '⏳ Processing...' : '🚀 Masuk'}
                   </Button>
 
                   <div className="text-center">
                     <button
                       onClick={() => setIsLogin(false)}
-                      className="text-green-400 hover:text-green-300 text-sm"
+                      className="text-cyan-400 hover:text-cyan-300 text-sm font-medium"
                     >
-                      Belum punya akun? Register
+                      Belum punya akun? Register 👉
                     </button>
                   </div>
                 </>
