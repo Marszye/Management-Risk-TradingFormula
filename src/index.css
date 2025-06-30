@@ -90,10 +90,53 @@
   50% { box-shadow: 0 0 40px rgba(168, 85, 247, 0.8); }
 }
 
+@keyframes rainbow-flow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 .animate-float {
   animation: float 3s ease-in-out infinite;
 }
 
 .animate-pulse-glow {
   animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-rainbow {
+  background: linear-gradient(-45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57, #ff9ff3, #54a0ff);
+  background-size: 400% 400%;
+  animation: rainbow-flow 4s ease infinite;
+}
+
+/* Gradient text utilities */
+.gradient-text-rainbow {
+  @apply bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent;
+}
+
+.gradient-text-sunset {
+  @apply bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 bg-clip-text text-transparent;
+}
+
+.gradient-text-ocean {
+  @apply bg-gradient-to-r from-blue-500 via-teal-500 to-green-500 bg-clip-text text-transparent;
+}
+
+/* Card hover effects */
+.card-hover {
+  @apply transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 hover:scale-105;
+}
+
+/* Button gradient effects */
+.btn-rainbow {
+  @apply bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 hover:from-pink-600 hover:via-purple-600 hover:to-indigo-600 text-white font-semibold;
+}
+
+.btn-sunset {
+  @apply bg-gradient-to-r from-orange-500 via-pink-500 to-red-500 hover:from-orange-600 hover:via-pink-600 hover:to-red-600 text-white font-semibold;
+}
+
+.btn-ocean {
+  @apply bg-gradient-to-r from-blue-500 via-teal-500 to-green-500 hover:from-blue-600 hover:via-teal-600 hover:to-green-600 text-white font-semibold;
 }

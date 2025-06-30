@@ -1,351 +1,313 @@
+
 import { useState } from 'react';
-import { AppLayout } from '@/components/layout/AppLayout';
-import { useProfile } from '@/hooks/useProfile';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
-import { Plus, Trash2 } from 'lucide-react';
-import { toast } from '@/components/ui/use-toast';
-import { supabase } from '@/integrations/supabase/client';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Badge } from '@/components/ui/badge';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { Settings as SettingsIcon, DollarSign, Target, RotateCcw, Plus, Trash2 } from 'lucide-react';
 
-const Settings = () => {
-  const { profile, updateProfile, isUpdating } = useProfile();
-  const [newBalance, setNewBalance] = useState('');
-  const [strategyName, setStrategyName] = useState('');
-  const [strategyCategory, setStrategyCategory] = useState('');
-  const [checklistItems, setChecklistItems] = useState(['']);
-  const queryClient = useQueryClient();
+interface Strategy {
+  id: string;
+  name: string;
+  category: string;
+  todoList: string[];
+}
 
-  // Get user strategies
-  const { data: strategies, isLoading: strategiesLoading } = useQuery({
-    queryKey: ['strategies'],
-    queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Not authenticated');
-
-      const { data, error } = await supabase
-        .from('strategies')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      return data;
-    },
-  });
-
-  const createStrategy = useMutation({
-    mutationFn: async (strategy: { name: string; category: string; checklist: string[] }) => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Not authenticated');
-
-      const { data, error } = await supabase
-        .from('strategies')
-        .insert({
-          user_id: user.id,
-          name: strategy.name,
-          category: strategy.category,
-          checklist: strategy.checklist,
-        })
-        .select()
-        .single();
-
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['strategies'] });
-      setStrategyName('');
-      setStrategyCategory('');
-      setChecklistItems(['']);
-      toast({
-        title: "Strategi Dibuat",
-        description: "Strategi kustom berhasil disimpan.",
-      });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Error",
-        description: error.message || "Gagal membuat strategi.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const deleteStrategy = useMutation({
-    mutationFn: async (strategyId: string) => {
-      const { error } = await supabase
-        .from('strategies')
-        .delete()
-        .eq('id', strategyId);
-
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['strategies'] });
-      toast({
-        title: "Strategi Dihapus",
-        description: "Strategi berhasil dihapus.",
-      });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Error",
-        description: error.message || "Gagal menghapus strategi.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const handleBalanceUpdate = () => {
-    const balance = parseFloat(newBalance);
-    if (isNaN(balance)) {
-      toast({
-        title: "Invalid Input",
-        description: "Masukkan angka yang valid.",
-        variant: "destructive",
-      });
-      return;
+export const Settings = () => {
+  const [initialBalance, setInitialBalance] = useState('1000');
+  const [strategies, setStrategies] = useState<Strategy[]>([
+    {
+      id: '1',
+      name: 'Scalping Master',
+      category: 'Short Term',
+      todoList: ['Check 1M timeframe', 'Identify support/resistance', 'Volume confirmation', 'Risk 1% max']
     }
-    updateProfile({ balance });
-    setNewBalance('');
+  ]);
+  
+  const [showStrategyForm, setShowStrategyForm] = useState(false);
+  const [newStrategyName, setNewStrategyName] = useState('');
+  const [newStrategyCategory, setNewStrategyCategory] = useState('');
+  const [newTodoItem, setNewTodoItem] = useState('');
+  const [currentTodoList, setCurrentTodoList] = useState<string[]>([]);
+
+  const addTodoItem = () => {
+    if (newTodoItem.trim()) {
+      setCurrentTodoList([...currentTodoList, newTodoItem.trim()]);
+      setNewTodoItem('');
+    }
   };
 
-  const handleAddChecklistItem = () => {
-    setChecklistItems([...checklistItems, '']);
-  };
-
-  const handleRemoveChecklistItem = (index: number) => {
-    setChecklistItems(checklistItems.filter((_, i) => i !== index));
-  };
-
-  const handleChecklistItemChange = (index: number, value: string) => {
-    const newItems = [...checklistItems];
-    newItems[index] = value;
-    setChecklistItems(newItems);
+  const removeTodoItem = (index: number) => {
+    setCurrentTodoList(currentTodoList.filter((_, i) => i !== index));
   };
 
   const handleCreateStrategy = () => {
-    if (!strategyName || !strategyCategory) {
-      toast({
-        title: "Data Tidak Lengkap",
-        description: "Nama strategi dan kategori harus diisi.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    const validChecklistItems = checklistItems.filter(item => item.trim() !== '');
-    if (validChecklistItems.length === 0) {
-      toast({
-        title: "Checklist Kosong",
-        description: "Tambahkan minimal 1 item checklist.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    createStrategy.mutate({
-      name: strategyName,
-      category: strategyCategory,
-      checklist: validChecklistItems,
-    });
-  };
-
-  const handleResetSettings = () => {
-    if (confirm('Yakin ingin reset semua pengaturan? Ini akan menghapus semua data Anda.')) {
-      // This would reset all user data - implement carefully
-      toast({
-        title: "Reset Berhasil",
-        description: "Semua pengaturan telah direset.",
-      });
+    if (newStrategyName && newStrategyCategory && currentTodoList.length > 0) {
+      const newStrategy: Strategy = {
+        id: Date.now().toString(),
+        name: newStrategyName,
+        category: newStrategyCategory,
+        todoList: currentTodoList
+      };
+      setStrategies([...strategies, newStrategy]);
+      
+      // Reset form
+      setNewStrategyName('');
+      setNewStrategyCategory('');
+      setCurrentTodoList([]);
+      setShowStrategyForm(false);
     }
   };
+
+  const deleteStrategy = (id: string) => {
+    setStrategies(strategies.filter(s => s.id !== id));
+  };
+
+  const resetAllSettings = () => {
+    setInitialBalance('1000');
+    setStrategies([]);
+    localStorage.clear();
+  };
+
+  const quotes = [
+    "Pengaturan yang tepat adalah fondasi kesuksesan",
+    "Strategi yang baik dimulai dari perencanaan yang matang",
+    "Customization adalah kunci personalisasi trading",
+    "Setting yang optimal menghasilkan performa maksimal"
+  ];
 
   return (
-    <AppLayout>
-      <div className="space-y-6">
-        <h1 className="text-3xl font-bold text-white">Settings</h1>
+    <div className="min-h-screen p-6 bg-gradient-to-br from-teal-50 via-cyan-50 to-blue-50">
+      {/* Header */}
+      <div className="mb-8 text-center">
+        <div className="bg-gradient-to-r from-teal-200 via-cyan-200 to-blue-200 rounded-2xl p-6 shadow-lg">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-teal-600 via-cyan-600 to-blue-600 bg-clip-text text-transparent mb-4">
+            ⚙️ Settings
+          </h1>
+          <p className="text-lg text-gray-700 italic font-medium">
+            "{quotes[Math.floor(Math.random() * quotes.length)]}"
+          </p>
+        </div>
+      </div>
 
-        <Tabs defaultValue="general" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-2 bg-gray-900">
-            <TabsTrigger value="general" className="data-[state=active]:bg-green-600">
-              Pengaturan Awal
-            </TabsTrigger>
-            <TabsTrigger value="strategies" className="data-[state=active]:bg-green-600">
-              Strategi Kustom
-            </TabsTrigger>
-          </TabsList>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Initial Balance Settings */}
+        <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 shadow-xl">
+          <CardHeader>
+            <CardTitle className="flex items-center text-green-700">
+              <DollarSign className="mr-2" />
+              Modal Dollar $$
+            </CardTitle>
+            <CardDescription>Set saldo awal untuk tracking performance</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label>Initial Balance ($)</Label>
+              <Input
+                type="number"
+                value={initialBalance}
+                onChange={(e) => setInitialBalance(e.target.value)}
+                className="bg-white border-green-300 text-lg font-bold"
+                placeholder="1000"
+              />
+            </div>
+            <Button className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white">
+              Simpan Saldo Awal
+            </Button>
+          </CardContent>
+        </Card>
 
-          <TabsContent value="general" className="space-y-4">
-            <Card className="bg-gray-900 border-gray-800">
-              <CardHeader>
-                <CardTitle className="text-green-400">Pengaturan Saldo</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <Label htmlFor="current-balance" className="text-gray-300">
-                    Saldo Saat Ini: ${profile?.balance?.toFixed(2) || '0.00'}
-                  </Label>
+        {/* Strategy Management */}
+        <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 shadow-xl">
+          <CardHeader>
+            <CardTitle className="flex items-center text-blue-700">
+              <Target className="mr-2" />
+              Strategy Management
+            </CardTitle>
+            <CardDescription>Kelola strategy trading kamu</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button
+              onClick={() => setShowStrategyForm(!showStrategyForm)}
+              className="w-full mb-4 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white"
+            >
+              <Plus className="mr-2" />
+              Tambah Strategy Baru
+            </Button>
+
+            {/* Strategy List */}
+            <div className="space-y-3">
+              {strategies.map((strategy) => (
+                <div key={strategy.id} className="p-4 bg-white rounded-lg border border-blue-200 shadow-sm">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="font-bold text-blue-700">{strategy.name}</h3>
+                    <div className="flex items-center space-x-2">
+                      <Badge className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white">
+                        {strategy.category}
+                      </Badge>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button size="sm" variant="outline" className="text-red-600 border-red-300">
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Hapus Strategy</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Apakah kamu yakin ingin menghapus strategy "{strategy.name}"?
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Batal</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => deleteStrategy(strategy.id)}>
+                              Hapus
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    <strong>Todo List:</strong>
+                    <ul className="list-disc list-inside mt-1 space-y-1">
+                      {strategy.todoList.map((todo, index) => (
+                        <li key={index}>{todo}</li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
-                <div className="flex space-x-2">
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Strategy Form */}
+        {showStrategyForm && (
+          <Card className="lg:col-span-2 bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 shadow-xl">
+            <CardHeader>
+              <CardTitle className="flex items-center text-purple-700">
+                <Plus className="mr-2" />
+                Buat Strategy Baru
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label>Nama Strategy</Label>
                   <Input
-                    id="new-balance"
-                    type="number"
-                    placeholder="Saldo baru"
-                    value={newBalance}
-                    onChange={(e) => setNewBalance(e.target.value)}
-                    className="bg-gray-800 border-gray-700 text-white"
+                    placeholder="Contoh: Scalping Master"
+                    value={newStrategyName}
+                    onChange={(e) => setNewStrategyName(e.target.value)}
+                    className="bg-white border-purple-300"
+                  />
+                </div>
+                <div>
+                  <Label>Category</Label>
+                  <Input
+                    placeholder="Contoh: Short Term"
+                    value={newStrategyCategory}
+                    onChange={(e) => setNewStrategyCategory(e.target.value)}
+                    className="bg-white border-purple-300"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label>Todo List Items</Label>
+                <div className="flex space-x-2 mb-3">
+                  <Input
+                    placeholder="Tambah item todo list..."
+                    value={newTodoItem}
+                    onChange={(e) => setNewTodoItem(e.target.value)}
+                    className="bg-white border-purple-300"
+                    onKeyPress={(e) => e.key === 'Enter' && addTodoItem()}
                   />
                   <Button
-                    onClick={handleBalanceUpdate}
-                    disabled={isUpdating}
-                    className="bg-yellow-500 hover:bg-yellow-600 text-black"
+                    onClick={addTodoItem}
+                    className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
                   >
-                    Update
+                    <Plus className="w-4 h-4" />
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
 
-            <Card className="bg-gray-900 border-gray-800">
-              <CardHeader>
-                <CardTitle className="text-red-400">Reset Pengaturan</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Button
-                  onClick={handleResetSettings}
-                  variant="destructive"
-                  className="w-full"
-                >
-                  Reset Semua Pengaturan
-                </Button>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="strategies" className="space-y-4">
-            <Card className="bg-gray-900 border-gray-800">
-              <CardHeader>
-                <CardTitle className="text-green-400">Buat Strategi Baru</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <Label htmlFor="strategy-name" className="text-gray-300">Nama Strategi</Label>
-                  <Input
-                    id="strategy-name"
-                    placeholder="e.g., Breakout Plan"
-                    value={strategyName}
-                    onChange={(e) => setStrategyName(e.target.value)}
-                    className="bg-gray-800 border-gray-700 text-white"
-                  />
+                {/* Current Todo List */}
+                <div className="space-y-2">
+                  {currentTodoList.map((todo, index) => (
+                    <div key={index} className="flex items-center justify-between p-2 bg-white rounded border border-purple-200">
+                      <span>{todo}</span>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => removeTodoItem(index)}
+                        className="text-red-600 border-red-300"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  ))}
                 </div>
+              </div>
 
-                <div>
-                  <Label htmlFor="strategy-category" className="text-gray-300">Kategori</Label>
-                  <Input
-                    id="strategy-category"
-                    placeholder="e.g., Konfirmasi, Entry, Exit"
-                    value={strategyCategory}
-                    onChange={(e) => setStrategyCategory(e.target.value)}
-                    className="bg-gray-800 border-gray-700 text-white"
-                  />
-                </div>
-
-                <div>
-                  <Label className="text-gray-300">Checklist To-Do</Label>
-                  <div className="space-y-2">
-                    {checklistItems.map((item, index) => (
-                      <div key={index} className="flex space-x-2">
-                        <Input
-                          placeholder={`Task ${index + 1}`}
-                          value={item}
-                          onChange={(e) => handleChecklistItemChange(index, e.target.value)}
-                          className="bg-gray-800 border-gray-700 text-white"
-                        />
-                        {checklistItems.length > 1 && (
-                          <Button
-                            onClick={() => handleRemoveChecklistItem(index)}
-                            variant="ghost"
-                            className="text-red-400 hover:text-red-300"
-                          >
-                            <Trash2 size={16} />
-                          </Button>
-                        )}
-                      </div>
-                    ))}
-                    <Button
-                      onClick={handleAddChecklistItem}
-                      variant="ghost"
-                      className="text-green-400 hover:text-green-300"
-                    >
-                      <Plus size={16} className="mr-2" />
-                      Tambah Item
-                    </Button>
-                  </div>
-                </div>
-
+              <div className="flex space-x-4">
                 <Button
                   onClick={handleCreateStrategy}
-                  disabled={createStrategy.isPending}
-                  className="w-full bg-yellow-500 hover:bg-yellow-600 text-black"
+                  disabled={!newStrategyName || !newStrategyCategory || currentTodoList.length === 0}
+                  className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white"
                 >
-                  {createStrategy.isPending ? 'Menyimpan...' : 'Simpan Strategi'}
+                  Buat Strategy
                 </Button>
-              </CardContent>
-            </Card>
+                <Button
+                  onClick={() => setShowStrategyForm(false)}
+                  variant="outline"
+                  className="border-purple-300"
+                >
+                  Batal
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
-            {/* Existing Strategies */}
-            <Card className="bg-gray-900 border-gray-800">
-              <CardHeader>
-                <CardTitle className="text-green-400">Strategi Tersimpan</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {strategiesLoading ? (
-                  <div className="text-center py-4">Loading...</div>
-                ) : strategies?.length === 0 ? (
-                  <div className="text-gray-400 text-center py-4">
-                    Belum ada strategi tersimpan
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {strategies?.map((strategy) => (
-                      <div key={strategy.id} className="bg-gray-800 p-4 rounded-lg">
-                        <div className="flex justify-between items-start mb-2">
-                          <div>
-                            <h3 className="font-semibold text-white">{strategy.name}</h3>
-                            <p className="text-sm text-gray-400">{strategy.category}</p>
-                          </div>
-                          <Button
-                            onClick={() => deleteStrategy.mutate(strategy.id)}
-                            variant="ghost"
-                            className="text-red-400 hover:text-red-300"
-                          >
-                            <Trash2 size={16} />
-                          </Button>
-                        </div>
-                        <div className="space-y-1">
-                          {(strategy.checklist as string[]).map((item, index) => (
-                            <div key={index} className="text-sm text-gray-300">
-                              • {item}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+        {/* Reset Settings */}
+        <Card className="lg:col-span-2 bg-gradient-to-br from-red-50 to-pink-50 border-2 border-red-200 shadow-xl">
+          <CardHeader>
+            <CardTitle className="flex items-center text-red-700">
+              <RotateCcw className="mr-2" />
+              Reset Semua Pengaturan
+            </CardTitle>
+            <CardDescription>Hapus semua data dan kembalikan ke pengaturan awal</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button className="w-full bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white">
+                  <RotateCcw className="mr-2" />
+                  Reset Semuanya dari Awal
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Reset Semua Pengaturan</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Apakah kamu yakin ingin menghapus semua data termasuk strategies, balance, dan pengaturan lainnya? 
+                    Tindakan ini tidak dapat dibatalkan.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Batal</AlertDialogCancel>
+                  <AlertDialogAction onClick={resetAllSettings} className="bg-red-600 hover:bg-red-700">
+                    Ya, Reset Semua
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </CardContent>
+        </Card>
       </div>
-    </AppLayout>
+    </div>
   );
 };
-
-export default Settings;
