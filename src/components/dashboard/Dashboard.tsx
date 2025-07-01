@@ -1,3 +1,4 @@
+
 import { useProfile } from '@/hooks/useProfile';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -55,115 +56,115 @@ export const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-rose-50">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="w-full">
+      <div className="space-y-4 md:space-y-6">
         
         {/* Welcome Section */}
-        <div className="text-center space-y-4">
+        <div className="text-center space-y-3 md:space-y-4">
           <div className="relative inline-block">
-            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-slate-800 mb-2">
+            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-slate-800 mb-2">
               Halo, {profile?.username || 'User'}! 👋
             </h1>
-            <Sparkles className="absolute -top-1 -right-4 md:-top-2 md:-right-6 h-5 w-5 md:h-6 md:w-6 text-amber-400 animate-pulse" />
+            <Sparkles className="absolute -top-1 -right-3 md:-top-2 md:-right-4 h-4 w-4 md:h-5 md:w-5 text-amber-400 animate-pulse" />
           </div>
           
-          <div className="bg-white border border-rose-200 rounded-xl p-4 md:p-6 shadow-sm mx-auto max-w-4xl">
-            <p className="text-lg md:text-xl lg:text-2xl font-semibold text-emerald-600 mb-3">
+          <div className="bg-white border border-rose-200 rounded-xl p-3 md:p-4 lg:p-5 shadow-sm">
+            <p className="text-base md:text-lg lg:text-xl font-semibold text-emerald-600 mb-2 md:mb-3">
               Kamu sudah {stats?.avgDiscipline || 0}% lebih disiplin hari ini! 🎯
             </p>
             
             {/* Daily Quote */}
-            <div className="bg-lavender-100 border border-lavender-200 rounded-lg p-3 md:p-4">
-              <div className="flex items-center justify-center mb-2">
-                <Star className="h-4 w-4 text-amber-500 mr-2" />
-                <span className="text-amber-600 font-semibold text-sm">Quote of the Day</span>
-                <Star className="h-4 w-4 text-amber-500 ml-2" />
+            <div className="bg-lavender-100 border border-lavender-200 rounded-lg p-2 md:p-3">
+              <div className="flex items-center justify-center mb-1 md:mb-2">
+                <Star className="h-3 w-3 md:h-4 md:w-4 text-amber-500 mr-1 md:mr-2" />
+                <span className="text-amber-600 font-semibold text-xs md:text-sm">Quote of the Day</span>
+                <Star className="h-3 w-3 md:h-4 md:w-4 text-amber-500 ml-1 md:ml-2" />
               </div>
-              <p className="text-slate-700 text-sm md:text-base italic text-center font-medium leading-relaxed">
+              <p className="text-slate-700 text-xs md:text-sm italic text-center font-medium leading-relaxed">
                 "{todayQuote}"
               </p>
             </div>
           </div>
         </div>
 
-        {/* Stats Cards - Fixed sizing and spacing */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="bg-white border border-emerald-200 hover:border-emerald-300 transition-all duration-300 hover:shadow-md h-32">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-4 pt-4">
-              <CardTitle className="text-sm font-medium text-emerald-700">💰 Saldo Sekarang</CardTitle>
-              <DollarSign className="h-4 w-4 text-emerald-500" />
+        {/* Stats Cards - Improved responsive grid */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+          <Card className="bg-white border border-emerald-200 hover:border-emerald-300 transition-all duration-300 hover:shadow-md">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-3 md:px-4 pt-3 md:pt-4">
+              <CardTitle className="text-xs md:text-sm font-medium text-emerald-700">💰 Saldo</CardTitle>
+              <DollarSign className="h-3 w-3 md:h-4 md:w-4 text-emerald-500" />
             </CardHeader>
-            <CardContent className="px-4 pb-4">
-              <div className="text-xl md:text-2xl font-bold text-emerald-600">
+            <CardContent className="px-3 md:px-4 pb-3 md:pb-4">
+              <div className="text-lg md:text-xl lg:text-2xl font-bold text-emerald-600">
                 ${profile?.balance?.toFixed(2) || '0.00'}
               </div>
-              <p className="text-xs text-emerald-600/70 mt-1">Modal Trading Kamu</p>
+              <p className="text-xs text-emerald-600/70 mt-1">Modal Trading</p>
             </CardContent>
           </Card>
 
-          <Card className="bg-white border border-amber-200 hover:border-amber-300 transition-all duration-300 hover:shadow-md h-32">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-4 pt-4">
-              <CardTitle className="text-sm font-medium text-amber-700">📊 Total P&L</CardTitle>
-              <TrendingUp className="h-4 w-4 text-amber-500" />
+          <Card className="bg-white border border-amber-200 hover:border-amber-300 transition-all duration-300 hover:shadow-md">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-3 md:px-4 pt-3 md:pt-4">
+              <CardTitle className="text-xs md:text-sm font-medium text-amber-700">📊 P&L</CardTitle>
+              <TrendingUp className="h-3 w-3 md:h-4 md:w-4 text-amber-500" />
             </CardHeader>
-            <CardContent className="px-4 pb-4">
-              <div className={`text-xl md:text-2xl font-bold ${(stats?.totalPL || 0) >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
+            <CardContent className="px-3 md:px-4 pb-3 md:pb-4">
+              <div className={`text-lg md:text-xl lg:text-2xl font-bold ${(stats?.totalPL || 0) >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
                 ${stats?.totalPL?.toFixed(2) || '0.00'}
               </div>
-              <p className="text-xs text-amber-600/70 mt-1">Profit & Loss Total</p>
+              <p className="text-xs text-amber-600/70 mt-1">Total P&L</p>
             </CardContent>
           </Card>
 
-          <Card className="bg-white border border-purple-200 hover:border-purple-300 transition-all duration-300 hover:shadow-md h-32">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-4 pt-4">
-              <CardTitle className="text-sm font-medium text-purple-700">🎯 Performa Disiplin</CardTitle>
-              <Target className="h-4 w-4 text-purple-500" />
+          <Card className="bg-white border border-purple-200 hover:border-purple-300 transition-all duration-300 hover:shadow-md">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-3 md:px-4 pt-3 md:pt-4">
+              <CardTitle className="text-xs md:text-sm font-medium text-purple-700">🎯 Disiplin</CardTitle>
+              <Target className="h-3 w-3 md:h-4 md:w-4 text-purple-500" />
             </CardHeader>
-            <CardContent className="px-4 pb-4">
-              <div className="text-xl md:text-2xl font-bold text-purple-600">
+            <CardContent className="px-3 md:px-4 pb-3 md:pb-4">
+              <div className="text-lg md:text-xl lg:text-2xl font-bold text-purple-600">
                 {stats?.avgDiscipline || 0}%
               </div>
-              <p className="text-xs text-purple-600/70 mt-1">Tingkat Kedisiplinan</p>
+              <p className="text-xs text-purple-600/70 mt-1">Kedisiplinan</p>
             </CardContent>
           </Card>
 
-          <Card className="bg-white border border-sky-200 hover:border-sky-300 transition-all duration-300 hover:shadow-md h-32">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-4 pt-4">
-              <CardTitle className="text-sm font-medium text-sky-700">📈 Trade / Winrate</CardTitle>
-              <TrendingUp className="h-4 w-4 text-sky-500" />
+          <Card className="bg-white border border-sky-200 hover:border-sky-300 transition-all duration-300 hover:shadow-md">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-3 md:px-4 pt-3 md:pt-4">
+              <CardTitle className="text-xs md:text-sm font-medium text-sky-700">📈 Winrate</CardTitle>
+              <TrendingUp className="h-3 w-3 md:h-4 md:w-4 text-sky-500" />
             </CardHeader>
-            <CardContent className="px-4 pb-4">
-              <div className="text-xl md:text-2xl font-bold text-sky-600">
+            <CardContent className="px-3 md:px-4 pb-3 md:pb-4">
+              <div className="text-lg md:text-xl lg:text-2xl font-bold text-sky-600">
                 {stats?.totalTrades || 0} / {stats?.winRate || 0}%
               </div>
-              <p className="text-xs text-sky-600/70 mt-1">Total & Persentase Win</p>
+              <p className="text-xs text-sky-600/70 mt-1">Trade/Win</p>
             </CardContent>
           </Card>
         </div>
 
-        {/* Quick Actions - Better spacing and sizing */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
+        {/* Quick Actions - Better responsive layout */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
           <Button
             onClick={() => navigate('/trade')}
-            className="h-16 bg-emerald-200 hover:bg-emerald-300 text-emerald-800 text-base font-bold shadow-sm transition-all duration-300 hover:shadow-md"
+            className="h-12 md:h-14 bg-emerald-200 hover:bg-emerald-300 text-emerald-800 text-sm md:text-base font-bold shadow-sm transition-all duration-300 hover:shadow-md"
           >
-            <Play className="mr-2 h-5 w-5" />
+            <Play className="mr-2 h-4 w-4 md:h-5 md:w-5" />
             🚀 Start Trade
           </Button>
           
           <Button
             onClick={() => navigate('/journal')}
-            className="h-16 bg-sky-200 hover:bg-sky-300 text-sky-800 text-base font-bold shadow-sm transition-all duration-300 hover:shadow-md"
+            className="h-12 md:h-14 bg-sky-200 hover:bg-sky-300 text-sky-800 text-sm md:text-base font-bold shadow-sm transition-all duration-300 hover:shadow-md"
           >
-            <BookOpen className="mr-2 h-5 w-5" />
+            <BookOpen className="mr-2 h-4 w-4 md:h-5 md:w-5" />
             📝 Journal
           </Button>
           
           <Button
             onClick={() => navigate('/reiteration')}
-            className="h-16 bg-purple-200 hover:bg-purple-300 text-purple-800 text-base font-bold shadow-sm transition-all duration-300 hover:shadow-md"
+            className="h-12 md:h-14 bg-purple-200 hover:bg-purple-300 text-purple-800 text-sm md:text-base font-bold shadow-sm transition-all duration-300 hover:shadow-md"
           >
-            <RotateCcw className="mr-2 h-5 w-5" />
+            <RotateCcw className="mr-2 h-4 w-4 md:h-5 md:w-5" />
             🔄 Evaluation
           </Button>
         </div>
