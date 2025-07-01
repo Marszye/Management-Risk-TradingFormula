@@ -10,7 +10,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
     <div className="min-h-screen bg-rose-50 text-slate-800">
       <Navigation />
       <div className="md:ml-60">
-        <main className="min-h-screen">
+        <main className="min-h-screen p-4 md:p-6">
           {children}
         </main>
       </div>

@@ -100,14 +100,14 @@ export const Reiteration = () => {
   ];
 
   return (
-    <div className="min-h-screen p-6 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
+    <div className="min-h-screen bg-indigo-50">
       {/* Header */}
-      <div className="mb-8 text-center">
-        <div className="bg-gradient-to-r from-indigo-200 via-purple-200 to-pink-200 rounded-2xl p-6 shadow-lg">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
+      <div className="mb-6 text-center">
+        <div className="bg-indigo-200 rounded-2xl p-4 shadow-lg">
+          <h1 className="text-3xl font-bold text-indigo-600 mb-3">
             🔄 Reiteration Evaluation
           </h1>
-          <p className="text-lg text-gray-700 italic font-medium">
+          <p className="text-base text-gray-700 italic font-medium">
             "{quotes[Math.floor(Math.random() * quotes.length)]}"
           </p>
         </div>
@@ -117,7 +117,7 @@ export const Reiteration = () => {
       <div className="mb-6 text-center">
         <Button
           onClick={() => setShowForm(!showForm)}
-          className="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white px-8 py-3 text-lg"
+          className="bg-indigo-500 hover:bg-indigo-600 text-white px-8 py-3 text-base"
         >
           <Target className="mr-2" />
           Buat Model Reiteration Baru
@@ -126,7 +126,7 @@ export const Reiteration = () => {
 
       {/* Create Form */}
       {showForm && (
-        <Card className="mb-8 bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 shadow-xl">
+        <Card className="mb-6 bg-purple-50 border border-purple-200 shadow-lg">
           <CardHeader>
             <CardTitle className="flex items-center text-purple-700">
               <RotateCcw className="mr-2" />
@@ -186,7 +186,7 @@ export const Reiteration = () => {
             <div className="flex space-x-4">
               <Button
                 onClick={handleCreateModel}
-                className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white"
+                className="bg-green-500 hover:bg-green-600 text-white"
               >
                 Buat Model
               </Button>
@@ -205,12 +205,12 @@ export const Reiteration = () => {
       {/* Models List */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {models.map((model) => (
-          <Card key={model.id} className="bg-gradient-to-br from-white to-purple-50 border-2 border-purple-200 shadow-lg">
+          <Card key={model.id} className="bg-white border border-purple-200 shadow-lg">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="text-purple-700">{model.title}</CardTitle>
                 {model.completed && (
-                  <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white">
+                  <Badge className="bg-green-500 text-white">
                     <Trophy className="w-3 h-3 mr-1" />
                     Completed
                   </Badge>
@@ -249,14 +249,14 @@ export const Reiteration = () => {
                 <div className="flex space-x-4">
                   <Button
                     onClick={() => handleDailyCheck(model.id, true)}
-                    className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white"
+                    className="flex-1 bg-green-500 hover:bg-green-600 text-white"
                   >
                     <CheckCircle className="mr-2 w-4 h-4" />
                     Disiplin Hari Ini
                   </Button>
                   <Button
                     onClick={() => handleDailyCheck(model.id, false)}
-                    className="flex-1 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white"
+                    className="flex-1 bg-red-500 hover:bg-red-600 text-white"
                   >
                     <XCircle className="mr-2 w-4 h-4" />
                     Tidak Disiplin

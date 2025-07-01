@@ -48,14 +48,14 @@ export const Journal = () => {
   ];
 
   return (
-    <div className="min-h-screen p-6 bg-gradient-to-br from-orange-50 via-yellow-50 to-red-50">
+    <div className="min-h-screen bg-orange-50">
       {/* Header */}
-      <div className="mb-8 text-center">
-        <div className="bg-gradient-to-r from-orange-200 via-yellow-200 to-red-200 rounded-2xl p-6 shadow-lg">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-orange-600 via-yellow-600 to-red-600 bg-clip-text text-transparent mb-4">
+      <div className="mb-6 text-center">
+        <div className="bg-orange-200 rounded-2xl p-4 shadow-lg">
+          <h1 className="text-3xl font-bold text-orange-600 mb-3">
             📝 Trading Journal
           </h1>
-          <p className="text-lg text-gray-700 italic font-medium">
+          <p className="text-base text-gray-700 italic font-medium">
             "{quotes[Math.floor(Math.random() * quotes.length)]}"
           </p>
         </div>
@@ -65,7 +65,7 @@ export const Journal = () => {
       <div className="mb-6 text-center">
         <Button
           onClick={() => setShowForm(!showForm)}
-          className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white px-8 py-3 text-lg"
+          className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 text-base"
         >
           <Plus className="mr-2" />
           Tambah Evaluasi Baru
@@ -74,7 +74,7 @@ export const Journal = () => {
 
       {/* Entry Form */}
       {showForm && (
-        <Card className="mb-8 bg-gradient-to-br from-yellow-50 to-orange-50 border-2 border-orange-200 shadow-xl">
+        <Card className="mb-6 bg-yellow-50 border border-orange-200 shadow-lg">
           <CardHeader>
             <CardTitle className="flex items-center text-orange-700">
               <Edit3 className="mr-2" />
@@ -116,7 +116,7 @@ export const Journal = () => {
             <div className="flex space-x-4">
               <Button
                 onClick={handleSubmit}
-                className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white"
+                className="bg-green-500 hover:bg-green-600 text-white"
               >
                 Simpan Evaluasi
               </Button>
@@ -135,11 +135,11 @@ export const Journal = () => {
       {/* Entries List */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {entries.map((entry) => (
-          <Card key={entry.id} className="bg-gradient-to-br from-white to-orange-50 border-2 border-orange-200 shadow-lg hover:shadow-xl transition-shadow duration-300">
+          <Card key={entry.id} className="bg-white border border-orange-200 shadow-lg hover:shadow-xl transition-shadow duration-300">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="text-orange-700 text-lg">{entry.title}</CardTitle>
-                <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white">
+                <Badge className="bg-orange-500 text-white">
                   <Calendar className="w-3 h-3 mr-1" />
                   {entry.date}
                 </Badge>

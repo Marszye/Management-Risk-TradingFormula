@@ -73,23 +73,23 @@ export const Trade = () => {
   ];
 
   return (
-    <div className="min-h-screen p-6 bg-gradient-to-br from-pink-50 via-blue-50 to-purple-50">
+    <div className="min-h-screen bg-pink-50">
       {/* Header with Quote */}
-      <div className="mb-8 text-center">
-        <div className="bg-gradient-to-r from-yellow-200 via-pink-200 to-purple-200 rounded-2xl p-6 shadow-lg">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent mb-4">
+      <div className="mb-6 text-center">
+        <div className="bg-pink-200 rounded-2xl p-4 shadow-lg">
+          <h1 className="text-3xl font-bold text-purple-600 mb-3">
             🚀 Start Trading
           </h1>
-          <p className="text-lg text-gray-700 italic font-medium">
+          <p className="text-base text-gray-700 italic font-medium">
             "{quotes[Math.floor(Math.random() * quotes.length)]}"
           </p>
         </div>
       </div>
 
       {!showResult ? (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Strategy Selection */}
-          <Card className="bg-gradient-to-br from-blue-50 to-cyan-50 border-2 border-blue-200 shadow-xl">
+          <Card className="bg-blue-50 border border-blue-200 shadow-lg">
             <CardHeader>
               <CardTitle className="flex items-center text-blue-700">
                 <Target className="mr-2" />
@@ -102,14 +102,14 @@ export const Trade = () => {
                 <div
                   key={strategy.id}
                   onClick={() => setSelectedStrategy(strategy.id)}
-                  className={`p-4 rounded-xl cursor-pointer transition-all duration-300 border-2 ${
+                  className={`p-4 rounded-xl cursor-pointer transition-all duration-300 border ${
                     selectedStrategy === strategy.id
-                      ? 'bg-gradient-to-r from-blue-200 to-cyan-200 border-blue-400 shadow-lg scale-105'
-                      : 'bg-white border-gray-200 hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 hover:border-blue-300'
+                      ? 'bg-blue-200 border-blue-400 shadow-lg'
+                      : 'bg-white border-gray-200 hover:bg-blue-50 hover:border-blue-300'
                   }`}
                 >
                   <h3 className="font-bold text-lg">{strategy.name}</h3>
-                  <Badge className="mt-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white">
+                  <Badge className="mt-2 bg-blue-500 text-white">
                     {strategy.category}
                   </Badge>
                 </div>
@@ -118,7 +118,7 @@ export const Trade = () => {
           </Card>
 
           {/* Trade Execution */}
-          <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 shadow-xl">
+          <Card className="bg-green-50 border border-green-200 shadow-lg">
             <CardHeader>
               <CardTitle className="flex items-center text-green-700">
                 <Play className="mr-2" />
@@ -188,7 +188,7 @@ export const Trade = () => {
 
           {/* Strategy Checklist */}
           {currentStrategy && (
-            <Card className="lg:col-span-2 bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 shadow-xl">
+            <Card className="lg:col-span-2 bg-purple-50 border border-purple-200 shadow-lg">
               <CardHeader>
                 <CardTitle className="flex items-center text-purple-700">
                   <CheckCircle className="mr-2" />
@@ -220,7 +220,7 @@ export const Trade = () => {
                 <Button
                   onClick={handleExecuteTrade}
                   disabled={disciplinePercentage !== 100 || psychology !== 'happiness' || !pair || !lotSize}
-                  className="w-full mt-6 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white text-lg py-3"
+                  className="w-full mt-6 bg-purple-500 hover:bg-purple-600 text-white text-lg py-3"
                 >
                   <TrendingUp className="mr-2" />
                   Execute Trade
@@ -231,7 +231,7 @@ export const Trade = () => {
         </div>
       ) : (
         // Result View
-        <Card className="max-w-2xl mx-auto bg-gradient-to-br from-yellow-50 to-orange-50 border-2 border-yellow-200 shadow-xl">
+        <Card className="max-w-2xl mx-auto bg-yellow-50 border border-yellow-200 shadow-lg">
           <CardHeader>
             <CardTitle className="text-center text-yellow-700 text-2xl">
               🎯 Trade Result
@@ -250,11 +250,11 @@ export const Trade = () => {
             </div>
 
             <div className="flex justify-center space-x-4">
-              <Button className="bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white px-8 py-3">
+              <Button className="bg-red-500 hover:bg-red-600 text-white px-8 py-3">
                 <XCircle className="mr-2" />
                 SL - Stop Loss
               </Button>
-              <Button className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white px-8 py-3">
+              <Button className="bg-green-500 hover:bg-green-600 text-white px-8 py-3">
                 <CheckCircle className="mr-2" />
                 TP - Take Profit
               </Button>
