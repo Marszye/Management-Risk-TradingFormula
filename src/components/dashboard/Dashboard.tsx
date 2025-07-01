@@ -57,45 +57,47 @@ export const Dashboard = () => {
 
   return (
     <div className="w-full h-full">
-      <div className="space-y-4">
+      <div className="max-w-full mx-auto">
         
-        {/* Welcome Section - More compact */}
-        <div className="text-center space-y-2">
-          <div className="relative inline-block">
-            <h1 className="text-xl md:text-2xl font-bold text-slate-800 mb-1">
-              Halo, {profile?.username || 'User'}! 👋
-            </h1>
-            <Sparkles className="absolute -top-1 -right-3 h-4 w-4 text-amber-400 animate-pulse" />
-          </div>
-          
-          <div className="bg-white border border-rose-200 rounded-xl p-3 shadow-sm">
-            <p className="text-base md:text-lg font-semibold text-emerald-600 mb-2">
-              Kamu sudah {stats?.avgDiscipline || 0}% lebih disiplin hari ini! 🎯
-            </p>
+        {/* Welcome Section */}
+        <div className="mb-6">
+          <div className="text-center space-y-3">
+            <div className="relative inline-block">
+              <h1 className="text-2xl md:text-3xl font-bold text-slate-800 mb-2">
+                Halo, {profile?.username || 'User'}! 👋
+              </h1>
+              <Sparkles className="absolute -top-1 -right-4 h-5 w-5 text-amber-400 animate-pulse" />
+            </div>
             
-            {/* Daily Quote - More compact */}
-            <div className="bg-lavender-100 border border-lavender-200 rounded-lg p-2">
-              <div className="flex items-center justify-center mb-1">
-                <Star className="h-3 w-3 text-amber-500 mr-1" />
-                <span className="text-amber-600 font-semibold text-xs">Quote of the Day</span>
-                <Star className="h-3 w-3 text-amber-500 ml-1" />
-              </div>
-              <p className="text-slate-700 text-xs italic text-center font-medium leading-relaxed">
-                "{todayQuote}"
+            <div className="bg-white border border-rose-200 rounded-xl p-4 shadow-sm">
+              <p className="text-lg md:text-xl font-semibold text-emerald-600 mb-3">
+                Kamu sudah {stats?.avgDiscipline || 0}% lebih disiplin hari ini! 🎯
               </p>
+              
+              {/* Daily Quote */}
+              <div className="bg-lavender-100 border border-lavender-200 rounded-lg p-3">
+                <div className="flex items-center justify-center mb-2">
+                  <Star className="h-4 w-4 text-amber-500 mr-2" />
+                  <span className="text-amber-600 font-semibold text-sm">Quote of the Day</span>
+                  <Star className="h-4 w-4 text-amber-500 ml-2" />
+                </div>
+                <p className="text-slate-700 text-sm italic text-center font-medium leading-relaxed">
+                  "{todayQuote}"
+                </p>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Stats Cards - Better responsive grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-3">
+        {/* Stats Cards - Optimized Grid */}
+        <div className="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
           <Card className="bg-white border border-emerald-200 hover:border-emerald-300 transition-all duration-300 hover:shadow-md">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 px-2 md:px-3 pt-2 md:pt-3">
-              <CardTitle className="text-xs font-medium text-emerald-700">💰 Saldo</CardTitle>
-              <DollarSign className="h-3 w-3 text-emerald-500" />
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-4 pt-4">
+              <CardTitle className="text-sm font-medium text-emerald-700">💰 Saldo</CardTitle>
+              <DollarSign className="h-4 w-4 text-emerald-500" />
             </CardHeader>
-            <CardContent className="px-2 md:px-3 pb-2 md:pb-3">
-              <div className="text-sm md:text-lg font-bold text-emerald-600">
+            <CardContent className="px-4 pb-4">
+              <div className="text-xl font-bold text-emerald-600">
                 ${profile?.balance?.toFixed(2) || '0.00'}
               </div>
               <p className="text-xs text-emerald-600/70 mt-1">Modal Trading</p>
@@ -103,12 +105,12 @@ export const Dashboard = () => {
           </Card>
 
           <Card className="bg-white border border-amber-200 hover:border-amber-300 transition-all duration-300 hover:shadow-md">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 px-2 md:px-3 pt-2 md:pt-3">
-              <CardTitle className="text-xs font-medium text-amber-700">📊 P&L</CardTitle>
-              <TrendingUp className="h-3 w-3 text-amber-500" />
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-4 pt-4">
+              <CardTitle className="text-sm font-medium text-amber-700">📊 P&L</CardTitle>
+              <TrendingUp className="h-4 w-4 text-amber-500" />
             </CardHeader>
-            <CardContent className="px-2 md:px-3 pb-2 md:pb-3">
-              <div className={`text-sm md:text-lg font-bold ${(stats?.totalPL || 0) >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
+            <CardContent className="px-4 pb-4">
+              <div className={`text-xl font-bold ${(stats?.totalPL || 0) >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
                 ${stats?.totalPL?.toFixed(2) || '0.00'}
               </div>
               <p className="text-xs text-amber-600/70 mt-1">Total P&L</p>
@@ -116,12 +118,12 @@ export const Dashboard = () => {
           </Card>
 
           <Card className="bg-white border border-purple-200 hover:border-purple-300 transition-all duration-300 hover:shadow-md">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 px-2 md:px-3 pt-2 md:pt-3">
-              <CardTitle className="text-xs font-medium text-purple-700">🎯 Disiplin</CardTitle>
-              <Target className="h-3 w-3 text-purple-500" />
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-4 pt-4">
+              <CardTitle className="text-sm font-medium text-purple-700">🎯 Disiplin</CardTitle>
+              <Target className="h-4 w-4 text-purple-500" />
             </CardHeader>
-            <CardContent className="px-2 md:px-3 pb-2 md:pb-3">
-              <div className="text-sm md:text-lg font-bold text-purple-600">
+            <CardContent className="px-4 pb-4">
+              <div className="text-xl font-bold text-purple-600">
                 {stats?.avgDiscipline || 0}%
               </div>
               <p className="text-xs text-purple-600/70 mt-1">Kedisiplinan</p>
@@ -129,12 +131,12 @@ export const Dashboard = () => {
           </Card>
 
           <Card className="bg-white border border-sky-200 hover:border-sky-300 transition-all duration-300 hover:shadow-md">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 px-2 md:px-3 pt-2 md:pt-3">
-              <CardTitle className="text-xs font-medium text-sky-700">📈 Winrate</CardTitle>
-              <TrendingUp className="h-3 w-3 text-sky-500" />
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-4 pt-4">
+              <CardTitle className="text-sm font-medium text-sky-700">📈 Winrate</CardTitle>
+              <TrendingUp className="h-4 w-4 text-sky-500" />
             </CardHeader>
-            <CardContent className="px-2 md:px-3 pb-2 md:pb-3">
-              <div className="text-sm md:text-lg font-bold text-sky-600">
+            <CardContent className="px-4 pb-4">
+              <div className="text-xl font-bold text-sky-600">
                 {stats?.totalTrades || 0} / {stats?.winRate || 0}%
               </div>
               <p className="text-xs text-sky-600/70 mt-1">Trade/Win</p>
@@ -142,29 +144,29 @@ export const Dashboard = () => {
           </Card>
         </div>
 
-        {/* Quick Actions - Full width responsive */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 md:gap-3">
+        {/* Quick Actions - Full Width Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Button
             onClick={() => navigate('/trade')}
-            className="h-10 md:h-12 bg-emerald-200 hover:bg-emerald-300 text-emerald-800 text-sm font-bold shadow-sm transition-all duration-300 hover:shadow-md"
+            className="h-14 bg-emerald-200 hover:bg-emerald-300 text-emerald-800 text-base font-bold shadow-sm transition-all duration-300 hover:shadow-md"
           >
-            <Play className="mr-2 h-4 w-4" />
+            <Play className="mr-2 h-5 w-5" />
             🚀 Start Trade
           </Button>
           
           <Button
             onClick={() => navigate('/journal')}
-            className="h-10 md:h-12 bg-sky-200 hover:bg-sky-300 text-sky-800 text-sm font-bold shadow-sm transition-all duration-300 hover:shadow-md"
+            className="h-14 bg-sky-200 hover:bg-sky-300 text-sky-800 text-base font-bold shadow-sm transition-all duration-300 hover:shadow-md"
           >
-            <BookOpen className="mr-2 h-4 w-4" />
+            <BookOpen className="mr-2 h-5 w-5" />
             📝 Journal
           </Button>
           
           <Button
             onClick={() => navigate('/reiteration')}
-            className="h-10 md:h-12 bg-purple-200 hover:bg-purple-300 text-purple-800 text-sm font-bold shadow-sm transition-all duration-300 hover:shadow-md"
+            className="h-14 bg-purple-200 hover:bg-purple-300 text-purple-800 text-base font-bold shadow-sm transition-all duration-300 hover:shadow-md"
           >
-            <RotateCcw className="mr-2 h-4 w-4" />
+            <RotateCcw className="mr-2 h-5 w-5" />
             🔄 Evaluation
           </Button>
         </div>
