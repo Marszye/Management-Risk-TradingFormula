@@ -1,13 +1,13 @@
-
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Settings as SettingsIcon, DollarSign, Target, RotateCcw, Plus, Trash2 } from 'lucide-react';
+import { useSettings } from '@/hooks/useSettings';
+import { useProfile } from '@/hooks/useProfile';
 
 interface Strategy {
   id: string;
@@ -17,6 +17,8 @@ interface Strategy {
 }
 
 export const Settings = () => {
+  const { settings, updateSettings, isUpdating } = useSettings();
+  const { updateProfile } = useProfile();
   const [initialBalance, setInitialBalance] = useState('1000');
   const [strategies, setStrategies] = useState<Strategy[]>([
     {
@@ -32,6 +34,26 @@ export const Settings = () => {
   const [newStrategyCategory, setNewStrategyCategory] = useState('');
   const [newTodoItem, setNewTodoItem] = useState('');
   const [currentTodoList, setCurrentTodoList] = useState<string[]>([]);
+
+  // Load settings when component mounts
+  useEffect(() => {
+    if (settings?.initial_balance) {
+      setInitialBalance(settings.initial_balance.toString());
+    }
+  }, [settings]);
+
+  const handleSaveBalance = async () => {
+    const balanceValue = parseFloat(initialBalance);
+    if (isNaN(balanceValue) || balanceValue < 0) {
+      return;
+    }
+
+    // Update settings
+    updateSettings({ initial_balance: balanceValue });
+    
+    // Also update profile balance
+    updateProfile({ balance: balanceValue });
+  };
 
   const addTodoItem = () => {
     if (newTodoItem.trim()) {
@@ -80,20 +102,20 @@ export const Settings = () => {
   ];
 
   return (
-    <div className="min-h-screen p-6 bg-gradient-to-br from-teal-50 via-cyan-50 to-blue-50">
+    <div className="w-full h-full p-4 md:p-6">
       {/* Header */}
-      <div className="mb-8 text-center">
-        <div className="bg-gradient-to-r from-teal-200 via-cyan-200 to-blue-200 rounded-2xl p-6 shadow-lg">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-teal-600 via-cyan-600 to-blue-600 bg-clip-text text-transparent mb-4">
+      <div className="mb-6 text-center">
+        <div className="bg-gradient-to-r from-teal-200 via-cyan-200 to-blue-200 rounded-2xl p-4 md:p-6 shadow-lg">
+          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-teal-600 via-cyan-600 to-blue-600 bg-clip-text text-transparent mb-4">
             ⚙️ Settings
           </h1>
-          <p className="text-lg text-gray-700 italic font-medium">
+          <p className="text-base md:text-lg text-gray-700 italic font-medium">
             "{quotes[Math.floor(Math.random() * quotes.length)]}"
           </p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Initial Balance Settings */}
         <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 shadow-xl">
           <CardHeader>
@@ -114,8 +136,12 @@ export const Settings = () => {
                 placeholder="1000"
               />
             </div>
-            <Button className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white">
-              Simpan Saldo Awal
+            <Button 
+              onClick={handleSaveBalance}
+              disabled={isUpdating}
+              className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white"
+            >
+              {isUpdating ? 'Menyimpan...' : 'Simpan Saldo Awal'}
             </Button>
           </CardContent>
         </Card>
