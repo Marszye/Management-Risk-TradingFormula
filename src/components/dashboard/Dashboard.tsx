@@ -1,11 +1,13 @@
 
 import { useProfile } from '@/hooks/useProfile';
+import { useSettings } from '@/hooks/useSettings';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { DollarSign, TrendingUp, Target, BookOpen, Play, RotateCcw, Sparkles, Star } from 'lucide-react';
+import { useEffect } from 'react';
 
 const motivationalQuotes = [
   "Lebih baik gak entry daripada rugi. Semua tuh konfirmasi dulu, Bro! 💪",
@@ -19,7 +21,15 @@ const motivationalQuotes = [
 
 export const Dashboard = () => {
   const navigate = useNavigate();
-  const { profile, isLoading: profileLoading } = useProfile();
+  const { profile, isLoading: profileLoading, updateProfile } = useProfile();
+  const { settings } = useSettings();
+
+  // Update profile balance when settings change
+  useEffect(() => {
+    if (settings?.initial_balance && profile && settings.initial_balance !== profile.balance) {
+      updateProfile({ balance: settings.initial_balance });
+    }
+  }, [settings, profile, updateProfile]);
 
   const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ['dashboard-stats'],
@@ -56,8 +66,7 @@ export const Dashboard = () => {
   }
 
   return (
-    <div className="w-full h-full">
-      <div className="w-full">
+    <div className="h-full">
         
         {/* Welcome Section */}
         <div className="mb-4">
@@ -170,7 +179,6 @@ export const Dashboard = () => {
             🔄 Evaluation
           </Button>
         </div>
-      </div>
     </div>
   );
 };
