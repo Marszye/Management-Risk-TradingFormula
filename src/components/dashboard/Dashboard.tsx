@@ -1,4 +1,3 @@
-
 import { useProfile } from '@/hooks/useProfile';
 import { useSettings } from '@/hooks/useSettings';
 import { useQuery } from '@tanstack/react-query';
@@ -66,7 +65,8 @@ export const Dashboard = () => {
   }
 
   return (
-    <div className="p-4 md:p-6 max-w-full">
+    <div className="w-full min-h-screen">
+      <div className="container mx-auto px-4 py-6 max-w-7xl">
         {/* Welcome Section */}
         <div className="mb-6">
           <div className="space-y-4">
@@ -153,7 +153,7 @@ export const Dashboard = () => {
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8">
           <Button
             onClick={() => navigate('/trade')}
             className="h-14 md:h-16 bg-emerald-200 hover:bg-emerald-300 text-emerald-800 text-base md:text-lg font-bold shadow-sm transition-all duration-300 hover:shadow-md"
@@ -178,6 +178,27 @@ export const Dashboard = () => {
             🔄 Evaluation
           </Button>
         </div>
+
+        {/* Anti-Amnesia Trader Section */}
+        <div className="bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-6 shadow-lg">
+          <div className="text-center mb-6">
+            <h2 className="text-2xl md:text-3xl font-bold text-purple-700 mb-3">
+              🧠 SISTEM ANTI-AMNESIA TRADER
+            </h2>
+            <p className="text-purple-600 font-medium">
+              Biar lu gak kebablasan pas cuan/floating/losing streak
+            </p>
+          </div>
+
+          <Button
+            onClick={() => navigate('/weekly-reflection')}
+            className="w-full h-16 bg-purple-500 hover:bg-purple-600 text-white text-lg font-bold shadow-lg transform transition-all duration-300 hover:scale-105"
+          >
+            <RotateCcw className="mr-3 h-6 w-6" />
+            🔁 Weekly Reflection Ritual
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };

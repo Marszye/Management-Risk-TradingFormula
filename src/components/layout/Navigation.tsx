@@ -12,7 +12,8 @@ import {
   LogOut,
   Menu,
   X,
-  Sparkles
+  Sparkles,
+  Brain
 } from 'lucide-react';
 
 export const Navigation = () => {
@@ -30,6 +31,7 @@ export const Navigation = () => {
     { icon: Play, label: '🚀 Start Trade', path: '/trade' },
     { icon: BookOpen, label: '📝 Journal', path: '/journal' },
     { icon: RotateCcw, label: '🔄 Reiteration', path: '/reiteration' },
+    { icon: Brain, label: '🧠 Anti-Amnesia', path: '/weekly-reflection' },
   ];
 
   const NavLink = ({ item }: { item: typeof navItems[0] }) => (

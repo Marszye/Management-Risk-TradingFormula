@@ -10,6 +10,7 @@ import { Settings } from '@/pages/Settings';
 import { Trade } from '@/pages/Trade';
 import { Journal } from '@/pages/Journal';
 import { Reiteration } from '@/pages/Reiteration';
+import { WeeklyReflection } from '@/pages/WeeklyReflection';
 import NotFound from '@/pages/NotFound';
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ function App() {
               <Route path="/trade" element={<Trade />} />
               <Route path="/journal" element={<Journal />} />
               <Route path="/reiteration" element={<Reiteration />} />
+              <Route path="/weekly-reflection" element={<WeeklyReflection />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AppLayout>
