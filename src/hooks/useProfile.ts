@@ -12,14 +12,38 @@ export const useProfile = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
-      const { data, error } = await supabase
+      // Try to get existing profile
+      const { data: existingProfile, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
-      return data;
+
+      // If profile exists, return it
+      if (existingProfile) {
+        return existingProfile;
+      }
+
+      // If no profile exists, create one with user metadata
+      const username = user.user_metadata?.full_name || 
+                      user.user_metadata?.name || 
+                      user.email?.split('@')[0] || 
+                      'user_' + user.id.substring(0, 8);
+
+      const { data: newProfile, error: createError } = await supabase
+        .from('profiles')
+        .insert({
+          id: user.id,
+          username: username,
+          balance: 0.00
+        })
+        .select()
+        .single();
+
+      if (createError) throw createError;
+      return newProfile;
     },
   });
 

@@ -66,14 +66,13 @@ export const Dashboard = () => {
   }
 
   return (
-    <div className="p-4 md:p-6">
-        
+    <div className="p-4 md:p-6 max-w-full">
         {/* Welcome Section */}
         <div className="mb-6">
           <div className="space-y-4">
             <div className="relative inline-block">
               <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-slate-800 mb-3">
-                Halo, {profile?.username || 'User'}! 👋
+                Halo, {profile?.username || 'Trader'}! 👋
               </h1>
               <Sparkles className="absolute -top-1 -right-4 h-5 w-5 md:h-6 md:w-6 text-amber-400 animate-pulse" />
             </div>

@@ -7,15 +7,11 @@ interface AppLayoutProps {
 
 export const AppLayout = ({ children }: AppLayoutProps) => {
   return (
-    <div className="min-h-screen bg-rose-50 text-slate-800">
+    <div className="min-h-screen bg-rose-50 text-slate-800 flex">
       <Navigation />
-      <div className="md:ml-72">
-        <main className="min-h-screen">
-          <div className="w-full">
-            {children}
-          </div>
-        </main>
-      </div>
+      <main className="flex-1 ml-0 md:ml-72">
+        {children}
+      </main>
     </div>
   );
 };
