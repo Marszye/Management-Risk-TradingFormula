@@ -31,16 +31,16 @@ export const ActionButtons = () => {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+    <div className="grid grid-cols-1 gap-3 px-2 sm:px-0">
       {actions.map((action) => (
         <Button
           key={action.path}
           onClick={() => navigate(action.path)}
-          className={`h-16 md:h-20 bg-gradient-to-r ${action.gradient} hover:opacity-90 text-white font-bold text-lg shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl border-0`}
+          className={`h-14 sm:h-16 bg-gradient-to-r ${action.gradient} hover:opacity-90 active:scale-95 text-white font-bold text-base sm:text-lg shadow-lg transition-all duration-200 touch-manipulation border-0 rounded-xl`}
         >
           <div className="flex items-center space-x-3">
-            <span className="text-2xl">{action.emoji}</span>
-            <action.icon className="h-6 w-6" />
+            <span className="text-xl sm:text-2xl">{action.emoji}</span>
+            <action.icon className="h-5 w-5 sm:h-6 sm:w-6" />
             <span>{action.label}</span>
           </div>
         </Button>

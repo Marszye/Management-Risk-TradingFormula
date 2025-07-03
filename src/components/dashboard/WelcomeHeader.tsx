@@ -12,26 +12,27 @@ export const WelcomeHeader = ({ username, disciplineScore, todayQuote }: Welcome
   const displayName = username && !username.startsWith('user_') ? username : 'Trader';
 
   return (
-    <div className="text-center space-y-4">
+    <div className="text-center space-y-3 px-2">
       <div className="relative inline-block">
-        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-purple-600 via-blue-600 to-emerald-600 bg-clip-text text-transparent">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 via-blue-600 to-emerald-600 bg-clip-text text-transparent leading-tight">
           Halo, {displayName}! 👋
         </h1>
-        <Sparkles className="absolute -top-2 -right-6 h-6 w-6 text-amber-400 animate-pulse" />
+        <Sparkles className="absolute -top-1 -right-4 sm:-right-6 h-4 w-4 sm:h-6 sm:w-6 text-amber-400 animate-pulse" />
       </div>
       
-      <div className="max-w-2xl mx-auto">
-        <p className="text-lg md:text-xl font-semibold text-emerald-600 mb-4">
+      <div className="max-w-full sm:max-w-lg mx-auto">
+        <p className="text-base sm:text-lg md:text-xl font-semibold text-emerald-600 mb-3">
           Kamu sudah {disciplineScore}% lebih disiplin hari ini! 🎯
         </p>
         
-        <div className="bg-white/80 backdrop-blur-sm border border-purple-200 rounded-2xl p-6 shadow-lg">
-          <div className="flex items-center justify-center mb-3">
-            <Star className="h-5 w-5 text-amber-500 mr-2" />
-            <span className="text-amber-600 font-bold text-lg">Quote of the Day</span>
-            <Star className="h-5 w-5 text-amber-500 ml-2" />
+        {/* Mobile-optimized quote card */}
+        <div className="bg-white/90 backdrop-blur-sm border border-purple-200 rounded-xl p-4 sm:p-6 shadow-lg mx-2 sm:mx-0">
+          <div className="flex items-center justify-center mb-2">
+            <Star className="h-4 w-4 text-amber-500 mr-2" />
+            <span className="text-amber-600 font-bold text-sm sm:text-base">Quote of the Day</span>
+            <Star className="h-4 w-4 text-amber-500 ml-2" />
           </div>
-          <p className="text-slate-700 text-base md:text-lg italic font-medium leading-relaxed">
+          <p className="text-slate-700 text-sm sm:text-base italic font-medium leading-relaxed">
             "{todayQuote}"
           </p>
         </div>

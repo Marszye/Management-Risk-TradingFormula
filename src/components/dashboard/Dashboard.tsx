@@ -58,15 +58,16 @@ export const Dashboard = () => {
   if (profileLoading || statsLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-        <div className="animate-spin rounded-full h-16 w-16 border-4 border-purple-300 border-t-purple-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-purple-300 border-t-purple-600"></div>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50">
-      <div className="container mx-auto px-4 py-6 max-w-7xl">
-        <div className="space-y-6">
+      {/* Mobile-optimized container with safe area padding */}
+      <div className="container mx-auto px-4 py-4 max-w-full sm:max-w-md md:max-w-4xl lg:max-w-7xl">
+        <div className="space-y-4 md:space-y-6">
           {/* Welcome Section */}
           <WelcomeHeader
             username={profile?.username}

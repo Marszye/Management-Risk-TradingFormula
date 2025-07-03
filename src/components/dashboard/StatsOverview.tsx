@@ -18,7 +18,7 @@ export const StatsOverview = ({
 }: StatsOverviewProps) => {
   const stats = [
     {
-      title: 'Modal Trading',
+      title: 'Modal',
       value: `$${balance?.toFixed(2) || '0.00'}`,
       icon: DollarSign,
       gradient: 'from-emerald-500 to-green-600',
@@ -26,7 +26,7 @@ export const StatsOverview = ({
       emoji: '💰'
     },
     {
-      title: 'Total P&L',
+      title: 'P&L',
       value: `$${totalPL?.toFixed(2) || '0.00'}`,
       icon: TrendingUp,
       gradient: totalPL && totalPL >= 0 ? 'from-blue-500 to-cyan-600' : 'from-red-500 to-pink-600',
@@ -34,7 +34,7 @@ export const StatsOverview = ({
       emoji: '📊'
     },
     {
-      title: 'Skor Disiplin',
+      title: 'Disiplin',
       value: `${avgDiscipline}%`,
       icon: Target,
       gradient: 'from-purple-500 to-violet-600',
@@ -52,22 +52,22 @@ export const StatsOverview = ({
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+    <div className="grid grid-cols-2 gap-3 sm:gap-4 px-2 sm:px-0">
       {stats.map((stat, index) => (
         <div 
           key={index}
-          className={`bg-gradient-to-br ${stat.bgGradient} border border-white/50 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105`}
+          className={`bg-gradient-to-br ${stat.bgGradient} border border-white/50 rounded-xl p-3 sm:p-4 shadow-lg hover:shadow-xl transition-all duration-300 active:scale-95 touch-manipulation`}
         >
-          <div className="flex items-center justify-between mb-3">
-            <div className={`bg-gradient-to-r ${stat.gradient} p-3 rounded-full`}>
-              <stat.icon className="h-6 w-6 text-white" />
+          <div className="flex items-center justify-between mb-2">
+            <div className={`bg-gradient-to-r ${stat.gradient} p-2 sm:p-2.5 rounded-full`}>
+              <stat.icon className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
             </div>
-            <span className="text-2xl">{stat.emoji}</span>
+            <span className="text-lg sm:text-xl">{stat.emoji}</span>
           </div>
           
           <div className="space-y-1">
-            <p className="text-sm font-medium text-slate-600">{stat.title}</p>
-            <p className="text-2xl md:text-3xl font-bold text-slate-800">{stat.value}</p>
+            <p className="text-xs sm:text-sm font-medium text-slate-600">{stat.title}</p>
+            <p className="text-lg sm:text-xl md:text-2xl font-bold text-slate-800 leading-tight">{stat.value}</p>
           </div>
         </div>
       ))}
