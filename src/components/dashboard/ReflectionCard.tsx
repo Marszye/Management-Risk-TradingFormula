@@ -1,7 +1,7 @@
 
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
-import { Brain, Sparkles } from 'lucide-react';
+import { Brain, Sparkles, RotateCcw } from 'lucide-react';
 
 export const ReflectionCard = () => {
   const navigate = useNavigate();
