@@ -5,19 +5,17 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useEffect } from 'react';
 
-import { WelcomeSection } from './WelcomeSection';
-import { DashboardStats } from './DashboardStats';
-import { QuickActions } from './QuickActions';
-import { AntiAmnesiaSection } from './AntiAmnesiaSection';
+import { WelcomeHeader } from './WelcomeHeader';
+import { StatsOverview } from './StatsOverview';
+import { ActionButtons } from './ActionButtons';
+import { ReflectionCard } from './ReflectionCard';
 
 const motivationalQuotes = [
   "Lebih baik gak entry daripada rugi. Semua tuh konfirmasi dulu, Bro! 💪",
   "Disiplin adalah jembatan antara tujuan dan pencapaian trading! 🌟",
   "Trader yang sukses bukan yang selalu profit, tapi yang selalu belajar! 📚",
   "Emosi adalah musuh terbesar trader. Kendalikan, jangan dikendalikan! 🧠",
-  "Kamu sedang membentuk otak miliarder. Ini bukan soal cuan, tapi soal kendali! 💎",
-  "Konsistensi mengalahkan keberuntungan dalam trading jangka panjang! ⚡",
-  "Setiap loss adalah pelajaran, setiap profit adalah bonus! 🎯",
+  "Kamu sedang membentuk otak miliarder. Ini bukan soal cuan, tapi soal kendali! 💎"
 ];
 
 export const Dashboard = () => {
@@ -59,32 +57,38 @@ export const Dashboard = () => {
 
   if (profileLoading || statsLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-16 w-16 border-4 border-rose-300 border-t-rose-500"></div>
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+        <div className="animate-spin rounded-full h-16 w-16 border-4 border-purple-300 border-t-purple-600"></div>
       </div>
     );
   }
 
   return (
-    <div className="w-full min-h-screen p-4">
-      <div className="container mx-auto max-w-6xl">
-        <WelcomeSection
-          username={profile?.username}
-          disciplineScore={stats?.avgDiscipline || 0}
-          todayQuote={todayQuote}
-        />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50">
+      <div className="container mx-auto px-4 py-6 max-w-7xl">
+        <div className="space-y-6">
+          {/* Welcome Section */}
+          <WelcomeHeader
+            username={profile?.username}
+            disciplineScore={stats?.avgDiscipline || 0}
+            todayQuote={todayQuote}
+          />
 
-        <DashboardStats
-          balance={profile?.balance}
-          totalPL={stats?.totalPL}
-          avgDiscipline={stats?.avgDiscipline || 0}
-          totalTrades={stats?.totalTrades || 0}
-          winRate={stats?.winRate || 0}
-        />
+          {/* Stats Overview */}
+          <StatsOverview
+            balance={profile?.balance}
+            totalPL={stats?.totalPL}
+            avgDiscipline={stats?.avgDiscipline || 0}
+            totalTrades={stats?.totalTrades || 0}
+            winRate={stats?.winRate || 0}
+          />
 
-        <QuickActions />
+          {/* Action Buttons */}
+          <ActionButtons />
 
-        <AntiAmnesiaSection />
+          {/* Reflection Card */}
+          <ReflectionCard />
+        </div>
       </div>
     </div>
   );

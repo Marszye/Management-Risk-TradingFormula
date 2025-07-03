@@ -27,10 +27,12 @@ export const useProfile = () => {
       }
 
       // If no profile exists, create one with user metadata
+      // Extract name from user metadata or email
       const username = user.user_metadata?.full_name || 
                       user.user_metadata?.name || 
+                      user.user_metadata?.username ||
                       user.email?.split('@')[0] || 
-                      'user_' + user.id.substring(0, 8);
+                      'Trader';
 
       const { data: newProfile, error: createError } = await supabase
         .from('profiles')
