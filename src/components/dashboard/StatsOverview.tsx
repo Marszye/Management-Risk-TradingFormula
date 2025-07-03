@@ -52,22 +52,22 @@ export const StatsOverview = ({
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-3 sm:gap-4 px-2 sm:px-0">
+    <div className="grid grid-cols-2 gap-4 md:gap-6">
       {stats.map((stat, index) => (
         <div 
           key={index}
-          className={`bg-gradient-to-br ${stat.bgGradient} border border-white/50 rounded-xl p-3 sm:p-4 shadow-lg hover:shadow-xl transition-all duration-300 active:scale-95 touch-manipulation`}
+          className={`bg-gradient-to-br ${stat.bgGradient} border border-white/50 rounded-xl p-4 md:p-6 shadow-lg hover:shadow-xl transition-all duration-300`}
         >
           <div className="flex items-center justify-between mb-2">
-            <div className={`bg-gradient-to-r ${stat.gradient} p-2 sm:p-2.5 rounded-full`}>
-              <stat.icon className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
+            <div className={`bg-gradient-to-r ${stat.gradient} p-2 md:p-3 rounded-full`}>
+              <stat.icon className="h-4 w-4 md:h-5 md:w-5 text-white" />
             </div>
-            <span className="text-lg sm:text-xl">{stat.emoji}</span>
+            <span className="text-xl md:text-2xl">{stat.emoji}</span>
           </div>
           
           <div className="space-y-1">
-            <p className="text-xs sm:text-sm font-medium text-slate-600">{stat.title}</p>
-            <p className="text-lg sm:text-xl md:text-2xl font-bold text-slate-800 leading-tight">{stat.value}</p>
+            <p className="text-xs md:text-sm font-medium text-slate-600">{stat.title}</p>
+            <p className="text-lg md:text-2xl font-bold text-slate-800">{stat.value}</p>
           </div>
         </div>
       ))}
