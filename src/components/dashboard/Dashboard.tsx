@@ -1,3 +1,4 @@
+
 import { useProfile } from '@/hooks/useProfile';
 import { useSettings } from '@/hooks/useSettings';
 import { useQuery } from '@tanstack/react-query';
@@ -65,31 +66,31 @@ export const Dashboard = () => {
   }
 
   return (
-    <div className="w-full min-h-screen">
-      <div className="container mx-auto px-4 py-6 max-w-7xl">
+    <div className="w-full min-h-screen p-4">
+      <div className="container mx-auto max-w-6xl">
         {/* Welcome Section */}
         <div className="mb-6">
           <div className="space-y-4">
             <div className="relative inline-block">
-              <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-slate-800 mb-3">
+              <h1 className="text-2xl md:text-3xl font-bold text-slate-800 mb-2">
                 Halo, {profile?.username || 'Trader'}! 👋
               </h1>
-              <Sparkles className="absolute -top-1 -right-4 h-5 w-5 md:h-6 md:w-6 text-amber-400 animate-pulse" />
+              <Sparkles className="absolute -top-1 -right-4 h-5 w-5 text-amber-400 animate-pulse" />
             </div>
             
-            <div className="bg-white border border-rose-200 rounded-xl p-4 md:p-6 shadow-sm">
-              <p className="text-lg md:text-xl lg:text-2xl font-semibold text-emerald-600 mb-4">
+            <div className="bg-white border border-rose-200 rounded-xl p-4 shadow-sm">
+              <p className="text-lg md:text-xl font-semibold text-emerald-600 mb-3">
                 Kamu sudah {stats?.avgDiscipline || 0}% lebih disiplin hari ini! 🎯
               </p>
               
               {/* Daily Quote */}
-              <div className="bg-lavender-100 border border-lavender-200 rounded-lg p-4">
-                <div className="flex items-center justify-center mb-3">
-                  <Star className="h-4 w-4 md:h-5 md:w-5 text-amber-500 mr-2" />
-                  <span className="text-amber-600 font-semibold text-sm md:text-base">Quote of the Day</span>
-                  <Star className="h-4 w-4 md:h-5 md:w-5 text-amber-500 ml-2" />
+              <div className="bg-lavender-100 border border-lavender-200 rounded-lg p-3">
+                <div className="flex items-center justify-center mb-2">
+                  <Star className="h-4 w-4 text-amber-500 mr-2" />
+                  <span className="text-amber-600 font-semibold text-sm">Quote of the Day</span>
+                  <Star className="h-4 w-4 text-amber-500 ml-2" />
                 </div>
-                <p className="text-slate-700 text-sm md:text-base italic text-center font-medium leading-relaxed">
+                <p className="text-slate-700 text-sm italic text-center font-medium leading-relaxed">
                   "{todayQuote}"
                 </p>
               </div>
@@ -98,103 +99,103 @@ export const Dashboard = () => {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           <Card className="bg-white border border-emerald-200 hover:border-emerald-300 transition-all duration-300 hover:shadow-md">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-4 pt-4">
-              <CardTitle className="text-sm font-medium text-emerald-700">💰 Saldo</CardTitle>
-              <DollarSign className="h-4 w-4 text-emerald-500" />
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-3 pt-3">
+              <CardTitle className="text-xs font-medium text-emerald-700">💰 Saldo</CardTitle>
+              <DollarSign className="h-3 w-3 text-emerald-500" />
             </CardHeader>
-            <CardContent className="px-4 pb-4">
-              <div className="text-xl md:text-2xl font-bold text-emerald-600">
+            <CardContent className="px-3 pb-3">
+              <div className="text-lg font-bold text-emerald-600">
                 ${profile?.balance?.toFixed(2) || '0.00'}
               </div>
-              <p className="text-xs text-emerald-600/70 mt-1">Modal Trading</p>
+              <p className="text-xs text-emerald-600/70">Modal Trading</p>
             </CardContent>
           </Card>
 
           <Card className="bg-white border border-amber-200 hover:border-amber-300 transition-all duration-300 hover:shadow-md">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-4 pt-4">
-              <CardTitle className="text-sm font-medium text-amber-700">📊 P&L</CardTitle>
-              <TrendingUp className="h-4 w-4 text-amber-500" />
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-3 pt-3">
+              <CardTitle className="text-xs font-medium text-amber-700">📊 P&L</CardTitle>
+              <TrendingUp className="h-3 w-3 text-amber-500" />
             </CardHeader>
-            <CardContent className="px-4 pb-4">
-              <div className={`text-xl md:text-2xl font-bold ${(stats?.totalPL || 0) >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
+            <CardContent className="px-3 pb-3">
+              <div className={`text-lg font-bold ${(stats?.totalPL || 0) >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
                 ${stats?.totalPL?.toFixed(2) || '0.00'}
               </div>
-              <p className="text-xs text-amber-600/70 mt-1">Total P&L</p>
+              <p className="text-xs text-amber-600/70">Total P&L</p>
             </CardContent>
           </Card>
 
           <Card className="bg-white border border-purple-200 hover:border-purple-300 transition-all duration-300 hover:shadow-md">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-4 pt-4">
-              <CardTitle className="text-sm font-medium text-purple-700">🎯 Disiplin</CardTitle>
-              <Target className="h-4 w-4 text-purple-500" />
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-3 pt-3">
+              <CardTitle className="text-xs font-medium text-purple-700">🎯 Disiplin</CardTitle>
+              <Target className="h-3 w-3 text-purple-500" />
             </CardHeader>
-            <CardContent className="px-4 pb-4">
-              <div className="text-xl md:text-2xl font-bold text-purple-600">
+            <CardContent className="px-3 pb-3">
+              <div className="text-lg font-bold text-purple-600">
                 {stats?.avgDiscipline || 0}%
               </div>
-              <p className="text-xs text-purple-600/70 mt-1">Kedisiplinan</p>
+              <p className="text-xs text-purple-600/70">Kedisiplinan</p>
             </CardContent>
           </Card>
 
           <Card className="bg-white border border-sky-200 hover:border-sky-300 transition-all duration-300 hover:shadow-md">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-4 pt-4">
-              <CardTitle className="text-sm font-medium text-sky-700">📈 Winrate</CardTitle>
-              <TrendingUp className="h-4 w-4 text-sky-500" />
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-3 pt-3">
+              <CardTitle className="text-xs font-medium text-sky-700">📈 Winrate</CardTitle>
+              <TrendingUp className="h-3 w-3 text-sky-500" />
             </CardHeader>
-            <CardContent className="px-4 pb-4">
-              <div className="text-xl md:text-2xl font-bold text-sky-600">
+            <CardContent className="px-3 pb-3">
+              <div className="text-lg font-bold text-sky-600">
                 {stats?.totalTrades || 0} / {stats?.winRate || 0}%
               </div>
-              <p className="text-xs text-sky-600/70 mt-1">Trade/Win</p>
+              <p className="text-xs text-sky-600/70">Trade/Win</p>
             </CardContent>
           </Card>
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <Button
             onClick={() => navigate('/trade')}
-            className="h-14 md:h-16 bg-emerald-200 hover:bg-emerald-300 text-emerald-800 text-base md:text-lg font-bold shadow-sm transition-all duration-300 hover:shadow-md"
+            className="h-12 bg-emerald-200 hover:bg-emerald-300 text-emerald-800 font-bold shadow-sm transition-all duration-300 hover:shadow-md"
           >
-            <Play className="mr-2 h-5 w-5 md:h-6 md:w-6" />
+            <Play className="mr-2 h-4 w-4" />
             🚀 Start Trade
           </Button>
           
           <Button
             onClick={() => navigate('/journal')}
-            className="h-14 md:h-16 bg-sky-200 hover:bg-sky-300 text-sky-800 text-base md:text-lg font-bold shadow-sm transition-all duration-300 hover:shadow-md"
+            className="h-12 bg-sky-200 hover:bg-sky-300 text-sky-800 font-bold shadow-sm transition-all duration-300 hover:shadow-md"
           >
-            <BookOpen className="mr-2 h-5 w-5 md:h-6 md:w-6" />
+            <BookOpen className="mr-2 h-4 w-4" />
             📝 Journal
           </Button>
           
           <Button
             onClick={() => navigate('/reiteration')}
-            className="h-14 md:h-16 bg-purple-200 hover:bg-purple-300 text-purple-800 text-base md:text-lg font-bold shadow-sm transition-all duration-300 hover:shadow-md"
+            className="h-12 bg-purple-200 hover:bg-purple-300 text-purple-800 font-bold shadow-sm transition-all duration-300 hover:shadow-md"
           >
-            <RotateCcw className="mr-2 h-5 w-5 md:h-6 md:w-6" />
+            <RotateCcw className="mr-2 h-4 w-4" />
             🔄 Evaluation
           </Button>
         </div>
 
         {/* Anti-Amnesia Trader Section */}
-        <div className="bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-6 shadow-lg">
-          <div className="text-center mb-6">
-            <h2 className="text-2xl md:text-3xl font-bold text-purple-700 mb-3">
+        <div className="bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-4 shadow-lg">
+          <div className="text-center mb-4">
+            <h2 className="text-xl md:text-2xl font-bold text-purple-700 mb-2">
               🧠 SISTEM ANTI-AMNESIA TRADER
             </h2>
-            <p className="text-purple-600 font-medium">
+            <p className="text-purple-600 font-medium text-sm">
               Biar lu gak kebablasan pas cuan/floating/losing streak
             </p>
           </div>
 
           <Button
             onClick={() => navigate('/weekly-reflection')}
-            className="w-full h-16 bg-purple-500 hover:bg-purple-600 text-white text-lg font-bold shadow-lg transform transition-all duration-300 hover:scale-105"
+            className="w-full h-12 bg-purple-500 hover:bg-purple-600 text-white font-bold shadow-lg transform transition-all duration-300 hover:scale-105"
           >
-            <RotateCcw className="mr-3 h-6 w-6" />
+            <RotateCcw className="mr-2 h-4 w-4" />
             🔁 Weekly Reflection Ritual
           </Button>
         </div>

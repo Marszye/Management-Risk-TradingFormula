@@ -217,6 +217,42 @@ export type Database = {
         }
         Relationships: []
       }
+      weekly_reflections: {
+        Row: {
+          bad_habit_to_remove: string
+          biggest_mistake: string
+          created_at: string
+          dominant_emotion: string
+          good_habit_to_build: string
+          id: string
+          main_lesson: string
+          user_id: string
+          week_start: string
+        }
+        Insert: {
+          bad_habit_to_remove: string
+          biggest_mistake: string
+          created_at?: string
+          dominant_emotion: string
+          good_habit_to_build: string
+          id?: string
+          main_lesson: string
+          user_id: string
+          week_start: string
+        }
+        Update: {
+          bad_habit_to_remove?: string
+          biggest_mistake?: string
+          created_at?: string
+          dominant_emotion?: string
+          good_habit_to_build?: string
+          id?: string
+          main_lesson?: string
+          user_id?: string
+          week_start?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
