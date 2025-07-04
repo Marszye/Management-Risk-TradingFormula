@@ -16,10 +16,14 @@ export const StatsOverview = ({
   totalTrades, 
   winRate 
 }: StatsOverviewProps) => {
+  // Calculate total balance = initial balance + profit/loss
+  const totalBalance = (balance || 0) + (totalPL || 0);
+  const plPercentage = balance ? ((totalPL || 0) / balance) * 100 : 0;
+
   const stats = [
     {
-      title: 'Modal',
-      value: `$${balance?.toFixed(2) || '0.00'}`,
+      title: 'Total Balance',
+      value: `$${totalBalance.toFixed(2)}`,
       icon: DollarSign,
       gradient: 'from-emerald-500 to-green-600',
       bgGradient: 'from-emerald-50 to-green-50',
@@ -27,10 +31,10 @@ export const StatsOverview = ({
     },
     {
       title: 'P&L',
-      value: `$${totalPL?.toFixed(2) || '0.00'}`,
+      value: `${plPercentage >= 0 ? '+' : ''}${plPercentage.toFixed(2)}%`,
       icon: TrendingUp,
-      gradient: totalPL && totalPL >= 0 ? 'from-blue-500 to-cyan-600' : 'from-red-500 to-pink-600',
-      bgGradient: totalPL && totalPL >= 0 ? 'from-blue-50 to-cyan-50' : 'from-red-50 to-pink-50',
+      gradient: plPercentage >= 0 ? 'from-blue-500 to-cyan-600' : 'from-red-500 to-pink-600',
+      bgGradient: plPercentage >= 0 ? 'from-blue-50 to-cyan-50' : 'from-red-50 to-pink-50',
       emoji: '📊'
     },
     {

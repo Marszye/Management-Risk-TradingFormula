@@ -14,6 +14,7 @@ export interface Trade {
   discipline_score: number;
   result?: 'pending' | 'sl' | 'tp';
   profit_loss?: number;
+  profit_loss_percentage?: number;
   strategy_id?: string;
   created_at: string;
   closed_at?: string;
@@ -60,7 +61,7 @@ export const useTrades = () => {
           take_profit: tradeData.take_profit,
           psychology_state: tradeData.psychology_state,
           discipline_score: tradeData.discipline_score,
-          strategy_id: null, // Set to null temporarily to avoid UUID error
+          strategy_id: tradeData.strategy_id || null,
           user_id: user.id,
           result: 'pending'
         })
@@ -93,18 +94,25 @@ export const useTrades = () => {
   });
 
   const updateTradeMutation = useMutation({
-    mutationFn: async ({ id, result, profit_loss }: { 
+    mutationFn: async ({ id, result, lotSize, initialBalance }: { 
       id: string; 
       result: 'sl' | 'tp'; 
-      profit_loss?: number 
+      lotSize: number;
+      initialBalance: number;
     }) => {
-      console.log('Updating trade:', { id, result, profit_loss });
+      console.log('Updating trade:', { id, result, lotSize, initialBalance });
+
+      // Calculate profit/loss based on lot size and percentage
+      const baseAmount = lotSize * 100; // Each lot = $100 base calculation
+      const profitLossAmount = result === 'tp' ? baseAmount : -baseAmount;
+      const profitLossPercentage = (profitLossAmount / initialBalance) * 100;
 
       const { data, error } = await supabase
         .from('trades')
         .update({ 
           result, 
-          profit_loss,
+          profit_loss: profitLossAmount,
+          profit_loss_percentage: profitLossPercentage,
           closed_at: new Date().toISOString()
         })
         .eq('id', id)
@@ -115,15 +123,35 @@ export const useTrades = () => {
         console.error('Trade update error:', error);
         throw error;
       }
+
+      // Update user balance
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('balance')
+          .eq('id', user.id)
+          .single();
+
+        if (profile) {
+          const newBalance = (profile.balance || initialBalance) + profitLossAmount;
+          await supabase
+            .from('profiles')
+            .update({ balance: newBalance })
+            .eq('id', user.id);
+        }
+      }
       
       console.log('Trade updated successfully:', data);
       return data;
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['trades'] });
+      queryClient.invalidateQueries({ queryKey: ['profile'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
       toast({
         title: "Trade Updated",
-        description: `Trade ${data.result === 'sl' ? 'Stop Loss' : 'Take Profit'} berhasil!`,
+        description: `Trade ${data.result === 'sl' ? 'Stop Loss' : 'Take Profit'} berhasil! P&L: ${data.profit_loss_percentage?.toFixed(2)}%`,
       });
     },
     onError: (error) => {

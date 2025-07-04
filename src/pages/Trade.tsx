@@ -10,11 +10,15 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Play, Target, TrendingUp, CheckCircle, XCircle } from 'lucide-react';
 import { useTrades } from '@/hooks/useTrades';
+import { useStrategies } from '@/hooks/useStrategies';
+import { useSettings } from '@/hooks/useSettings';
 import { useNavigate } from 'react-router-dom';
 
 export const Trade = () => {
   const navigate = useNavigate();
   const { createTrade, updateTrade, isCreatingTrade, isUpdatingTrade } = useTrades();
+  const { strategies, isLoading: strategiesLoading } = useStrategies();
+  const { settings } = useSettings();
   
   const [selectedStrategy, setSelectedStrategy] = useState('');
   const [pair, setPair] = useState('');
@@ -25,27 +29,6 @@ export const Trade = () => {
   const [checkedItems, setCheckedItems] = useState<string[]>([]);
   const [currentTrade, setCurrentTrade] = useState<any>(null);
 
-  const strategies = [
-    { 
-      id: 'scalping', 
-      name: 'Scalping Master', 
-      category: 'Short Term',
-      todos: ['Check 1M timeframe', 'Identify support/resistance', 'Volume confirmation', 'Risk 1% max']
-    },
-    { 
-      id: 'swing', 
-      name: 'Swing Trader', 
-      category: 'Medium Term',
-      todos: ['Daily chart analysis', 'Weekly trend check', 'Economic calendar', 'Position sizing']
-    },
-    { 
-      id: 'breakout', 
-      name: 'Breakout Hunter', 
-      category: 'Momentum',
-      todos: ['Consolidation pattern', 'Volume spike', 'False breakout check', 'Stop loss placement']
-    }
-  ];
-
   const psychologyOptions = [
     { id: 'fear', label: 'Takut (Fear)', color: 'bg-red-100 text-red-700', negative: true },
     { id: 'greed', label: 'Serakah (Greed)', color: 'bg-orange-100 text-orange-700', negative: true },
@@ -54,7 +37,7 @@ export const Trade = () => {
   ];
 
   const currentStrategy = strategies.find(s => s.id === selectedStrategy);
-  const disciplinePercentage = currentStrategy ? (checkedItems.length / currentStrategy.todos.length) * 100 : 0;
+  const disciplinePercentage = currentStrategy ? (checkedItems.length / currentStrategy.checklist.length) * 100 : 0;
 
   const handleTodoCheck = (todo: string, checked: boolean) => {
     if (checked) {
@@ -85,14 +68,12 @@ export const Trade = () => {
   };
 
   const handleTradeResult = (result: 'sl' | 'tp') => {
-    if (currentTrade) {
-      // Simple P&L calculation (you can make this more sophisticated)
-      const profit_loss = result === 'tp' ? 100 : -50; // Example values
-      
+    if (currentTrade && settings?.initial_balance) {
       updateTrade({ 
         id: currentTrade.id, 
         result, 
-        profit_loss 
+        lotSize: currentTrade.lot_size,
+        initialBalance: settings.initial_balance
       }, {
         onSuccess: () => {
           // Reset form and navigate back
@@ -116,6 +97,17 @@ export const Trade = () => {
     "Plan your trade, trade your plan",
     "Risk management is everything"
   ];
+
+  if (strategiesLoading) {
+    return (
+      <div className="w-full flex justify-center items-center min-h-[400px]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading strategies...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full">
@@ -144,22 +136,28 @@ export const Trade = () => {
                 <CardDescription>Pilih strategy trading yang akan digunakan</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3 md:space-y-4">
-                {strategies.map((strategy) => (
-                  <div
-                    key={strategy.id}
-                    onClick={() => setSelectedStrategy(strategy.id)}
-                    className={`p-3 md:p-4 rounded-xl cursor-pointer transition-all duration-300 border ${
-                      selectedStrategy === strategy.id
-                        ? 'bg-blue-200 border-blue-400 shadow-lg'
-                        : 'bg-white border-gray-200 hover:bg-blue-50 hover:border-blue-300'
-                    }`}
-                  >
-                    <h3 className="font-bold text-base md:text-lg">{strategy.name}</h3>
-                    <Badge className="mt-2 bg-blue-500 text-white text-xs">
-                      {strategy.category}
-                    </Badge>
+                {strategies.length === 0 ? (
+                  <div className="text-center py-4">
+                    <p className="text-gray-500">Belum ada strategy. Buat strategy di menu Settings terlebih dahulu.</p>
                   </div>
-                ))}
+                ) : (
+                  strategies.map((strategy) => (
+                    <div
+                      key={strategy.id}
+                      onClick={() => setSelectedStrategy(strategy.id)}
+                      className={`p-3 md:p-4 rounded-xl cursor-pointer transition-all duration-300 border ${
+                        selectedStrategy === strategy.id
+                          ? 'bg-blue-200 border-blue-400 shadow-lg'
+                          : 'bg-white border-gray-200 hover:bg-blue-50 hover:border-blue-300'
+                      }`}
+                    >
+                      <h3 className="font-bold text-base md:text-lg">{strategy.name}</h3>
+                      <Badge className="mt-2 bg-blue-500 text-white text-xs">
+                        {strategy.category}
+                      </Badge>
+                    </div>
+                  ))
+                )}
               </CardContent>
             </Card>
 
@@ -253,7 +251,7 @@ export const Trade = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-                    {currentStrategy.todos.map((todo, index) => (
+                    {currentStrategy.checklist.map((todo, index) => (
                       <div key={index} className="flex items-center space-x-3 p-2 md:p-3 bg-white rounded-lg border border-purple-200">
                         <Checkbox
                           checked={checkedItems.includes(todo)}

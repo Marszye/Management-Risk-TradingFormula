@@ -9,26 +9,13 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Settings as SettingsIcon, DollarSign, Target, RotateCcw, Plus, Trash2 } from 'lucide-react';
 import { useSettings } from '@/hooks/useSettings';
 import { useProfile } from '@/hooks/useProfile';
-
-interface Strategy {
-  id: string;
-  name: string;
-  category: string;
-  todoList: string[];
-}
+import { useStrategies } from '@/hooks/useStrategies';
 
 export const Settings = () => {
   const { settings, updateSettings, isUpdating } = useSettings();
   const { updateProfile } = useProfile();
+  const { strategies, createStrategy, deleteStrategy, isCreating, isDeleting } = useStrategies();
   const [initialBalance, setInitialBalance] = useState('1000');
-  const [strategies, setStrategies] = useState<Strategy[]>([
-    {
-      id: '1',
-      name: 'Scalping Master',
-      category: 'Short Term',
-      todoList: ['Check 1M timeframe', 'Identify support/resistance', 'Volume confirmation', 'Risk 1% max']
-    }
-  ]);
   
   const [showStrategyForm, setShowStrategyForm] = useState(false);
   const [newStrategyName, setNewStrategyName] = useState('');
@@ -69,29 +56,24 @@ export const Settings = () => {
 
   const handleCreateStrategy = () => {
     if (newStrategyName && newStrategyCategory && currentTodoList.length > 0) {
-      const newStrategy: Strategy = {
-        id: Date.now().toString(),
+      createStrategy({
         name: newStrategyName,
         category: newStrategyCategory,
-        todoList: currentTodoList
-      };
-      setStrategies([...strategies, newStrategy]);
-      
-      // Reset form
-      setNewStrategyName('');
-      setNewStrategyCategory('');
-      setCurrentTodoList([]);
-      setShowStrategyForm(false);
+        checklist: currentTodoList
+      }, {
+        onSuccess: () => {
+          // Reset form
+          setNewStrategyName('');
+          setNewStrategyCategory('');
+          setCurrentTodoList([]);
+          setShowStrategyForm(false);
+        }
+      });
     }
-  };
-
-  const deleteStrategy = (id: string) => {
-    setStrategies(strategies.filter(s => s.id !== id));
   };
 
   const resetAllSettings = () => {
     setInitialBalance('1000');
-    setStrategies([]);
     localStorage.clear();
   };
 
@@ -177,7 +159,12 @@ export const Settings = () => {
                       </Badge>
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
-                          <Button size="sm" variant="outline" className="text-red-600 border-red-300">
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            className="text-red-600 border-red-300"
+                            disabled={isDeleting}
+                          >
                             <Trash2 className="w-4 h-4" />
                           </Button>
                         </AlertDialogTrigger>
@@ -201,7 +188,7 @@ export const Settings = () => {
                   <div className="text-sm text-gray-600">
                     <strong>Todo List:</strong>
                     <ul className="list-disc list-inside mt-1 space-y-1">
-                      {strategy.todoList.map((todo, index) => (
+                      {strategy.checklist.map((todo, index) => (
                         <li key={index}>{todo}</li>
                       ))}
                     </ul>
@@ -282,10 +269,10 @@ export const Settings = () => {
               <div className="flex space-x-4">
                 <Button
                   onClick={handleCreateStrategy}
-                  disabled={!newStrategyName || !newStrategyCategory || currentTodoList.length === 0}
+                  disabled={!newStrategyName || !newStrategyCategory || currentTodoList.length === 0 || isCreating}
                   className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white"
                 >
-                  Buat Strategy
+                  {isCreating ? 'Membuat...' : 'Buat Strategy'}
                 </Button>
                 <Button
                   onClick={() => setShowStrategyForm(false)}
