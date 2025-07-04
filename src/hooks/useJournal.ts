@@ -19,12 +19,18 @@ export const useJournal = () => {
   const { data: entries = [], isLoading } = useQuery({
     queryKey: ['journal-entries'],
     queryFn: async () => {
+      console.log('Fetching journal entries...');
       const { data, error } = await supabase
         .from('journal_entries')
         .select('*')
         .order('created_at', { ascending: false });
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching journal entries:', error);
+        throw error;
+      }
+      
+      console.log('Journal entries fetched:', data);
       return data as JournalEntry[];
     }
   });
@@ -38,16 +44,25 @@ export const useJournal = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('User not authenticated');
 
+      console.log('Creating journal entry with data:', entryData);
+
       const { data, error } = await supabase
         .from('journal_entries')
         .insert({
-          ...entryData,
+          title: entryData.title,
+          thoughts: entryData.thoughts,
+          problems: entryData.problems,
           user_id: user.id
         })
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Journal entry creation error:', error);
+        throw error;
+      }
+      
+      console.log('Journal entry created successfully:', data);
       return data;
     },
     onSuccess: () => {
@@ -58,6 +73,7 @@ export const useJournal = () => {
       });
     },
     onError: (error) => {
+      console.error('Journal entry creation failed:', error);
       toast({
         title: "Error",
         description: `Gagal menyimpan journal: ${error.message}`,
@@ -68,12 +84,19 @@ export const useJournal = () => {
 
   const deleteEntryMutation = useMutation({
     mutationFn: async (id: string) => {
+      console.log('Deleting journal entry:', id);
+      
       const { error } = await supabase
         .from('journal_entries')
         .delete()
         .eq('id', id);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Journal entry deletion error:', error);
+        throw error;
+      }
+      
+      console.log('Journal entry deleted successfully');
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['journal-entries'] });
@@ -83,6 +106,7 @@ export const useJournal = () => {
       });
     },
     onError: (error) => {
+      console.error('Journal entry deletion failed:', error);
       toast({
         title: "Error",
         description: `Gagal menghapus journal: ${error.message}`,

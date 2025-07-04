@@ -49,17 +49,30 @@ export const useTrades = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('User not authenticated');
 
+      console.log('Creating trade with data:', tradeData);
+
       const { data, error } = await supabase
         .from('trades')
         .insert({
-          ...tradeData,
+          pair: tradeData.pair,
+          lot_size: tradeData.lot_size,
+          stop_loss: tradeData.stop_loss,
+          take_profit: tradeData.take_profit,
+          psychology_state: tradeData.psychology_state,
+          discipline_score: tradeData.discipline_score,
+          strategy_id: null, // Set to null temporarily to avoid UUID error
           user_id: user.id,
           result: 'pending'
         })
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Trade creation error:', error);
+        throw error;
+      }
+      
+      console.log('Trade created successfully:', data);
       return data;
     },
     onSuccess: () => {
@@ -70,6 +83,7 @@ export const useTrades = () => {
       });
     },
     onError: (error) => {
+      console.error('Trade creation failed:', error);
       toast({
         title: "Error",
         description: `Gagal membuat trade: ${error.message}`,
@@ -84,6 +98,8 @@ export const useTrades = () => {
       result: 'sl' | 'tp'; 
       profit_loss?: number 
     }) => {
+      console.log('Updating trade:', { id, result, profit_loss });
+
       const { data, error } = await supabase
         .from('trades')
         .update({ 
@@ -95,7 +111,12 @@ export const useTrades = () => {
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Trade update error:', error);
+        throw error;
+      }
+      
+      console.log('Trade updated successfully:', data);
       return data;
     },
     onSuccess: (data) => {
@@ -106,6 +127,7 @@ export const useTrades = () => {
       });
     },
     onError: (error) => {
+      console.error('Trade update failed:', error);
       toast({
         title: "Error",
         description: `Gagal update trade: ${error.message}`,
