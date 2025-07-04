@@ -27,12 +27,18 @@ export const useTrades = () => {
   const { data: trades = [], isLoading } = useQuery({
     queryKey: ['trades'],
     queryFn: async () => {
+      console.log('Fetching trades...');
       const { data, error } = await supabase
         .from('trades')
         .select('*')
         .order('created_at', { ascending: false });
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching trades:', error);
+        throw error;
+      }
+      
+      console.log('Trades fetched:', data);
       return data as Trade[];
     }
   });
@@ -134,7 +140,8 @@ export const useTrades = () => {
           .single();
 
         if (profile) {
-          const newBalance = (profile.balance || initialBalance) + profitLossAmount;
+          const currentBalance = profile.balance || initialBalance;
+          const newBalance = currentBalance + profitLossAmount;
           await supabase
             .from('profiles')
             .update({ balance: newBalance })
@@ -149,9 +156,10 @@ export const useTrades = () => {
       queryClient.invalidateQueries({ queryKey: ['trades'] });
       queryClient.invalidateQueries({ queryKey: ['profile'] });
       queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
+      const percentage = data.profit_loss_percentage?.toFixed(2) || '0.00';
       toast({
         title: "Trade Updated",
-        description: `Trade ${data.result === 'sl' ? 'Stop Loss' : 'Take Profit'} berhasil! P&L: ${data.profit_loss_percentage?.toFixed(2)}%`,
+        description: `Trade ${data.result === 'sl' ? 'Stop Loss' : 'Take Profit'} berhasil! P&L: ${percentage}%`,
       });
     },
     onError: (error) => {

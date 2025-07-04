@@ -146,6 +146,7 @@ export type Database = {
           lot_size: number
           pair: string
           profit_loss: number | null
+          profit_loss_percentage: number | null
           psychology_state: string
           result: string | null
           stop_loss: number | null
@@ -161,6 +162,7 @@ export type Database = {
           lot_size: number
           pair: string
           profit_loss?: number | null
+          profit_loss_percentage?: number | null
           psychology_state: string
           result?: string | null
           stop_loss?: number | null
@@ -176,6 +178,7 @@ export type Database = {
           lot_size?: number
           pair?: string
           profit_loss?: number | null
+          profit_loss_percentage?: number | null
           psychology_state?: string
           result?: string | null
           stop_loss?: number | null
