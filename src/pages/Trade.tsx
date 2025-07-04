@@ -9,8 +9,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Play, Target, TrendingUp, CheckCircle, XCircle } from 'lucide-react';
+import { useTrades } from '@/hooks/useTrades';
+import { useNavigate } from 'react-router-dom';
 
 export const Trade = () => {
+  const navigate = useNavigate();
+  const { createTrade, updateTrade, isCreatingTrade, isUpdatingTrade } = useTrades();
+  
   const [selectedStrategy, setSelectedStrategy] = useState('');
   const [pair, setPair] = useState('');
   const [lotSize, setLotSize] = useState('');
@@ -18,7 +23,7 @@ export const Trade = () => {
   const [tp, setTp] = useState('');
   const [psychology, setPsychology] = useState('');
   const [checkedItems, setCheckedItems] = useState<string[]>([]);
-  const [showResult, setShowResult] = useState(false);
+  const [currentTrade, setCurrentTrade] = useState<any>(null);
 
   const strategies = [
     { 
@@ -61,7 +66,47 @@ export const Trade = () => {
 
   const handleExecuteTrade = () => {
     if (disciplinePercentage === 100 && psychology === 'happiness' && pair && lotSize) {
-      setShowResult(true);
+      const tradeData = {
+        pair,
+        lot_size: parseFloat(lotSize),
+        stop_loss: sl ? parseFloat(sl) : undefined,
+        take_profit: tp ? parseFloat(tp) : undefined,
+        psychology_state: psychology,
+        discipline_score: disciplinePercentage,
+        strategy_id: selectedStrategy
+      };
+
+      createTrade(tradeData, {
+        onSuccess: (data) => {
+          setCurrentTrade(data);
+        }
+      });
+    }
+  };
+
+  const handleTradeResult = (result: 'sl' | 'tp') => {
+    if (currentTrade) {
+      // Simple P&L calculation (you can make this more sophisticated)
+      const profit_loss = result === 'tp' ? 100 : -50; // Example values
+      
+      updateTrade({ 
+        id: currentTrade.id, 
+        result, 
+        profit_loss 
+      }, {
+        onSuccess: () => {
+          // Reset form and navigate back
+          setCurrentTrade(null);
+          setPair('');
+          setLotSize('');
+          setSl('');
+          setTp('');
+          setPsychology('');
+          setSelectedStrategy('');
+          setCheckedItems([]);
+          navigate('/');
+        }
+      });
     }
   };
 
@@ -87,7 +132,7 @@ export const Trade = () => {
           </div>
         </div>
 
-        {!showResult ? (
+        {!currentTrade ? (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
             {/* Strategy Selection */}
             <Card className="bg-blue-50 border border-blue-200 shadow-lg">
@@ -141,6 +186,7 @@ export const Trade = () => {
                     <Label className="text-sm">Size Lot</Label>
                     <Input
                       placeholder="0.01"
+                      type="number"
                       value={lotSize}
                       onChange={(e) => setLotSize(e.target.value)}
                       className="bg-white border-green-300"
@@ -150,6 +196,7 @@ export const Trade = () => {
                     <Label className="text-sm">SL</Label>
                     <Input
                       placeholder="Stop Loss"
+                      type="number"
                       value={sl}
                       onChange={(e) => setSl(e.target.value)}
                       className="bg-white border-green-300"
@@ -159,6 +206,7 @@ export const Trade = () => {
                     <Label className="text-sm">TP</Label>
                     <Input
                       placeholder="Take Profit"
+                      type="number"
                       value={tp}
                       onChange={(e) => setTp(e.target.value)}
                       className="bg-white border-green-300"
@@ -220,11 +268,11 @@ export const Trade = () => {
 
                   <Button
                     onClick={handleExecuteTrade}
-                    disabled={disciplinePercentage !== 100 || psychology !== 'happiness' || !pair || !lotSize}
+                    disabled={disciplinePercentage !== 100 || psychology !== 'happiness' || !pair || !lotSize || isCreatingTrade}
                     className="w-full mt-4 md:mt-6 bg-purple-500 hover:bg-purple-600 text-white text-base md:text-lg py-2 md:py-3"
                   >
                     <TrendingUp className="mr-2" />
-                    Execute Trade
+                    {isCreatingTrade ? 'Creating Trade...' : 'Execute Trade'}
                   </Button>
                 </CardContent>
               </Card>
@@ -242,22 +290,30 @@ export const Trade = () => {
               <div className="grid grid-cols-2 gap-3 md:gap-4">
                 <div className="p-3 md:p-4 bg-white rounded-xl border border-yellow-200">
                   <p className="text-xs md:text-sm text-gray-600">Pair</p>
-                  <p className="font-bold text-base md:text-lg">{pair}</p>
+                  <p className="font-bold text-base md:text-lg">{currentTrade.pair}</p>
                 </div>
                 <div className="p-3 md:p-4 bg-white rounded-xl border border-yellow-200">
                   <p className="text-xs md:text-sm text-gray-600">Lot Size</p>
-                  <p className="font-bold text-base md:text-lg">{lotSize}</p>
+                  <p className="font-bold text-base md:text-lg">{currentTrade.lot_size}</p>
                 </div>
               </div>
 
               <div className="flex flex-col sm:flex-row justify-center space-y-2 sm:space-y-0 sm:space-x-4">
-                <Button className="bg-red-500 hover:bg-red-600 text-white px-6 md:px-8 py-2 md:py-3">
+                <Button 
+                  onClick={() => handleTradeResult('sl')}
+                  disabled={isUpdatingTrade}
+                  className="bg-red-500 hover:bg-red-600 text-white px-6 md:px-8 py-2 md:py-3"
+                >
                   <XCircle className="mr-2" />
-                  SL - Stop Loss
+                  {isUpdatingTrade ? 'Processing...' : 'SL - Stop Loss'}
                 </Button>
-                <Button className="bg-green-500 hover:bg-green-600 text-white px-6 md:px-8 py-2 md:py-3">
+                <Button 
+                  onClick={() => handleTradeResult('tp')}
+                  disabled={isUpdatingTrade}
+                  className="bg-green-500 hover:bg-green-600 text-white px-6 md:px-8 py-2 md:py-3"
+                >
                   <CheckCircle className="mr-2" />
-                  TP - Take Profit
+                  {isUpdatingTrade ? 'Processing...' : 'TP - Take Profit'}
                 </Button>
               </div>
 

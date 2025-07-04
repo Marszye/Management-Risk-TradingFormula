@@ -6,18 +6,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { BookOpen, Plus, Calendar, Edit3 } from 'lucide-react';
-
-interface JournalEntry {
-  id: string;
-  title: string;
-  thoughts: string;
-  problems: string;
-  date: string;
-}
+import { BookOpen, Plus, Calendar, Edit3, Trash2 } from 'lucide-react';
+import { useJournal } from '@/hooks/useJournal';
 
 export const Journal = () => {
-  const [entries, setEntries] = useState<JournalEntry[]>([]);
+  const { entries, createEntry, deleteEntry, isLoading, isCreating } = useJournal();
   const [showForm, setShowForm] = useState(false);
   const [title, setTitle] = useState('');
   const [thoughts, setThoughts] = useState('');
@@ -25,18 +18,24 @@ export const Journal = () => {
 
   const handleSubmit = () => {
     if (title && thoughts && problems) {
-      const newEntry: JournalEntry = {
-        id: Date.now().toString(),
+      createEntry({
         title,
         thoughts,
-        problems,
-        date: new Date().toLocaleDateString('id-ID')
-      };
-      setEntries([newEntry, ...entries]);
-      setTitle('');
-      setThoughts('');
-      setProblems('');
-      setShowForm(false);
+        problems
+      }, {
+        onSuccess: () => {
+          setTitle('');
+          setThoughts('');
+          setProblems('');
+          setShowForm(false);
+        }
+      });
+    }
+  };
+
+  const handleDelete = (id: string) => {
+    if (confirm('Apakah Anda yakin ingin menghapus journal ini?')) {
+      deleteEntry(id);
     }
   };
 
@@ -46,6 +45,17 @@ export const Journal = () => {
     "Trader yang baik selalu melakukan introspeksi",
     "Journal trading adalah GPS menuju kesuksesan"
   ];
+
+  if (isLoading) {
+    return (
+      <div className="w-full flex justify-center items-center min-h-[400px]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading journal entries...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full">
@@ -117,9 +127,10 @@ export const Journal = () => {
               <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
                 <Button
                   onClick={handleSubmit}
+                  disabled={!title || !thoughts || !problems || isCreating}
                   className="bg-green-500 hover:bg-green-600 text-white"
                 >
-                  Simpan Evaluasi
+                  {isCreating ? 'Menyimpan...' : 'Simpan Evaluasi'}
                 </Button>
                 <Button
                   onClick={() => setShowForm(false)}
@@ -140,10 +151,20 @@ export const Journal = () => {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-orange-700 text-base md:text-lg">{entry.title}</CardTitle>
-                  <Badge className="bg-orange-500 text-white text-xs">
-                    <Calendar className="w-3 h-3 mr-1" />
-                    {entry.date}
-                  </Badge>
+                  <div className="flex items-center space-x-2">
+                    <Badge className="bg-orange-500 text-white text-xs">
+                      <Calendar className="w-3 h-3 mr-1" />
+                      {new Date(entry.created_at).toLocaleDateString('id-ID')}
+                    </Badge>
+                    <Button
+                      onClick={() => handleDelete(entry.id)}
+                      variant="ghost"
+                      size="sm"
+                      className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent className="space-y-3 md:space-y-4">
